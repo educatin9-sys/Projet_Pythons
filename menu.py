@@ -1,5 +1,5 @@
 import pygame
-from setting import colors, draw_button
+from setting import colors, draw_button, color
 import sys
 
 class Menu:
@@ -22,7 +22,6 @@ class Menu:
             sys.exit()
             
         self.running = False
-        print('ok')
 
 
     def get_event_game(self):
@@ -32,46 +31,115 @@ class Menu:
                 sys.exit()
 
     def update_game(self):
-        self.screen.fill(colors['bouton_on'])
+        self.screen.fill(color['background'][0])
 
+        key_pressed = pygame.key.get_pressed()
         mouse_pos = pygame.mouse.get_pos()
-        mouse_clicked = pygame.mouse.get_pressed()[0]
+        mouse_clicked = pygame.mouse.get_pressed()  # on récupère tous les boutons [gauche, milieu, droit]
         W, H = self.screen.get_size()
 
-        draw_button(
-            self.screen, "Jouer",
-            W // 2, H // 2 - 120,  # Position Y ajustée
-            "center",
-            colors['theme'], (255, 255, 255), (255, 240, 0),
-            mouse_pos, mouse_clicked,
-            lambda: self.stop(False)
+        # Titre
+        self.screen.blit(
+            pygame.font.Font(None, 36).render("Snake game", True, [255, 255, 255]),
+            [W // 2 - 80, 20]
         )
 
+        # Bouton Jouer
         draw_button(
-            self.screen, "Options",
-            W // 2, H // 2,
+            self.screen,
+            "Jouer",
+            W // 2,
+            H // 2 - 120,
             "center",
-            colors['theme'], (255, 255, 255), (255, 240, 0),
-            mouse_pos, mouse_clicked,
-            lambda: print("Options")
+            color['bouton_on'],
+            (255, 255, 255),
+            color['bouton_off'],
+            mouse_pos,
+            mouse_clicked,
+            key_pressed,
+            command_left=lambda: self.stop(False),
+            command_right=lambda: self.stop(False),
+            command_enter=lambda: self.stop(False)
         )
 
+        # Bouton Options
         draw_button(
-            self.screen, "Quitter",
-            W // 2, H // 2 + 120,
+            self.screen,
+            "Options",
+            W // 2,
+            H // 2,
             "center",
-            colors['theme'], (255, 255, 255), (255, 240, 0),
-            mouse_pos, mouse_clicked,
-            lambda: self.stop(True)
+            color['bouton_on'],
+            (255, 255, 255),
+            color['bouton_off'],
+            mouse_pos,
+            mouse_clicked,
+            key_pressed,
+            command_left=lambda: self.show_options(),
+            command_right=lambda: self.show_options(),
+            command_enter=lambda: self.show_options()
         )
 
-
-       
+        # Bouton Quitter
+        draw_button(
+            self.screen,
+            "Quitter",
+            W // 2,
+            H // 2 + 120,
+            "center",
+            color['bouton_on'],
+            (255, 255, 255),
+            color['bouton_off'],
+            mouse_pos,
+            mouse_clicked,
+            key_pressed,
+            command_left=lambda: self.stop(True),
+            command_right=lambda: self.stop(True),
+            command_enter=lambda: self.stop(True)
+        )
 
         pygame.display.flip()
-        pygame.display.update()
-
         self.timer.tick(self.fps)
+
+    def show_options(self):
+        options_running = True
+        while options_running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.running = False
+                    sys.exit()
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                    options_running = False
+
+            self.screen.fill(color['background'][0])
+            W, H = self.screen.get_size()
+
+            # Title
+            self.screen.blit(
+                pygame.font.Font(None, 36).render("Options", True, [255, 255, 255]),
+                [W // 2 - 50, 20]
+            )
+
+            # Volume option
+            self.screen.blit(
+                pygame.font.Font(None, 24).render("Volume: 80%", True, [255, 255, 255]),
+                [W // 2 - 100, H // 2 - 80]
+            )
+
+            # Theme option
+            self.screen.blit(
+                pygame.font.Font(None, 24).render("Theme: Dark", True, [255, 255, 255]),
+                [W // 2 - 100, H // 2]
+            )
+
+            # Best score option
+            self.screen.blit(
+                pygame.font.Font(None, 24).render("Best Score: 150", True, [255, 255, 255]),
+                [W // 2 - 100, H // 2 + 80]
+            )
+
+            pygame.display.flip()
+            self.timer.tick(self.fps)
 
     def run_game(self):
         while self.running:
