@@ -2,6 +2,7 @@ import pygame
 import setting
 from menu import Menu
 from snake import Snake
+from particle import Particle
 import sys
 import time
 import random
@@ -10,27 +11,6 @@ pygame.init()
 pygame.mixer.init()
 
 
-class Particle:
-    def __init__(self, x, y, vx, vy, life, color):
-        self.x = x
-        self.y = y
-        self.vx = vx
-        self.vy = vy
-        self.life = life
-        self.color = color
-
-    def update(self):
-        self.x += self.vx
-        self.y += self.vy
-        self.vy += 0.15
-        self.life -= 1
-
-    def draw(self, surface):
-        if self.life > 0:
-            alpha = max(0, min(255, int(255 * (self.life / 30))))
-            surf = pygame.Surface((4, 4), pygame.SRCALPHA)
-            surf.fill((*self.color, alpha))
-            surface.blit(surf, (int(self.x), int(self.y)))
 
 
 class Game:
@@ -44,6 +24,7 @@ class Game:
         pygame.mixer.music.load("asset/sound.mp3")
         # régler le volume depuis les settings (0-100 -> 0.0-1.0)
         pygame.mixer.music.set_volume(setting.settings.get('volume', 80) / 100)
+
         pygame.mixer.music.play(-1)          # -1 = boucle infinie
 
 
@@ -357,7 +338,7 @@ class Game:
 
         # afficher meilleur score
         best = setting.settings.get('best_score', 0)
-        self.screen.blit(pygame.font.Font(None, 28).render(f"Best: {best}", True, [255, 255, 255]), [self.size_screen[0]-150, 5])
+        self.screen.blit(pygame.font.Font(None, 36).render(f"Best: {best}", True, [255, 255, 255]), [self.size_screen[0]//2-150, 5])
 
         # update et dessiner particules
         for p in list(self.particles):

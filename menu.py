@@ -7,6 +7,7 @@ class Menu:
     def __init__(self, screen):
         
         self.size_screen = (750, 500)
+        pygame.mixer.music.set_volume(setting.settings.get('volume', 80) / 100)
         self.timer, self.fps = pygame.time.Clock(), 10
         self.size_case = 30
 
@@ -116,6 +117,8 @@ class Menu:
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                     options_running = False
 
+            pygame.mixer.music.set_volume(setting.settings.get('volume', 80) / 100)
+
             # récupérer états
             key_pressed = pygame.key.get_pressed()
             mouse_pos = pygame.mouse.get_pos()
@@ -133,7 +136,7 @@ class Menu:
             # helpers pour actions
             def change_volume(delta):
                 vol = int(setting.settings.get('volume', 80))
-                vol = max(0, min(100, vol + delta))
+                vol = max(0, min(200, vol + delta))
                 setting.set_volume(vol)
 
             def next_theme():
@@ -195,7 +198,7 @@ class Menu:
                 [W // 2 - 40, H // 2 + 40]
             )
 
-            setting.draw_button(self.screen, "AI", W // 2 + 120, H // 2 + 40, "center",
+            setting.draw_button(self.screen, "AI", W // 2 + 120, H // 2 + 80, "center",
                                 setting.color['bouton_on'], (255, 255, 255), setting.color['bouton_off'],
                                 mouse_pos, mouse_clicked, key_pressed,
                                 command_left=setting.toggle_ai,
@@ -208,11 +211,11 @@ class Menu:
                 [W // 2 - 60, H // 2 + 80]
             )
 
-            setting.draw_button(self.screen, "Reset", W // 2 + 120, H // 2 + 80, "center",
+            setting.draw_button(self.screen, "Reset", W // 2 - 120, H // 2 + 80, "center",
                                 setting.color['bouton_on'], (255, 255, 255), setting.color['bouton_off'],
                                 mouse_pos, mouse_clicked, key_pressed,
                                 command_left=reset_best,
-                                width=100, height=50)
+                                width=100, height=40)
 
             # Back button
             setting.draw_button(self.screen, "Retour", W // 2, H - 80, "center",

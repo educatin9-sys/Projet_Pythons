@@ -38,7 +38,7 @@ color = {
 
 # Réglages persistants (volume en %, theme_index référence l'index dans color['background'], best_score entier)
 settings = {
-    "volume": 80,
+    "volume": 0,
     "theme_index": 0,
     "best_score": 0,
     "scores": [],
@@ -89,7 +89,7 @@ def cycle_theme(next=True):
 
 
 def set_volume(value: int):
-    settings["volume"] = max(0, min(100, int(value)))
+    settings["volume"] = max(0, min(200, int(value)))
     save_settings()
 
 
