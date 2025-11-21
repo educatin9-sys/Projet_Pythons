@@ -4,9 +4,33 @@ from menu import Menu
 from snake import Snake
 import sys
 import time
+import random
 
 pygame.init()
 pygame.mixer.init()
+
+
+class Particle:
+    def __init__(self, x, y, vx, vy, life, color):
+        self.x = x
+        self.y = y
+        self.vx = vx
+        self.vy = vy
+        self.life = life
+        self.color = color
+
+    def update(self):
+        self.x += self.vx
+        self.y += self.vy
+        self.vy += 0.15
+        self.life -= 1
+
+    def draw(self, surface):
+        if self.life > 0:
+            alpha = max(0, min(255, int(255 * (self.life / 30))))
+            surf = pygame.Surface((4, 4), pygame.SRCALPHA)
+            surf.fill((*self.color, alpha))
+            surface.blit(surf, (int(self.x), int(self.y)))
 
 
 class Game:
@@ -18,14 +42,25 @@ class Game:
         self.size_case = 40
 
         pygame.mixer.music.load("asset/sound.mp3")
-        pygame.mixer.music.set_volume(0.5)   # volume entre 0.0 et 1.0
+        # régler le volume depuis les settings (0-100 -> 0.0-1.0)
+        pygame.mixer.music.set_volume(setting.settings.get('volume', 80) / 100)
         pygame.mixer.music.play(-1)          # -1 = boucle infinie
 
 
         self.sound = pygame.mixer.Sound('asset/game-start.mp3')
-        self.sound.set_volume(10)
+        self.sound.set_volume(min(1.0, setting.settings.get('volume', 80) / 10))
 
         self.score = 0
+        # état cheat (invincibilité / wrap)
+        self.cheat = False
+        # particules
+        self.particles = []
+        # essayer d'importer matplotlib à la volée pour la touche 'q'
+        try:
+            import matplotlib.pyplot as plt
+            self._plt = plt
+        except Exception:
+            self._plt = None
 
         self.nb_casex, self.nb_casey = self.size_screen[0] // self.size_case, self.size_screen[1] // self.size_case
 
@@ -99,13 +134,37 @@ class Game:
                 if event.key == pygame.K_g:
                     self.is_grid = not self.is_grid
 
+                if event.key == pygame.K_b:
+                    # toggle cheat (invincible / wrap)
+                    self.cheat = not self.cheat
+
+                if event.key == pygame.K_q:
+                    # afficher graphique des scores si possible
+                    if self._plt is None:
+                        print("matplotlib non disponible")
+                    else:
+                        scores = setting.get_scores()
+                        if not scores:
+                            print("Aucun score enregistré")
+                        else:
+                            plt = self._plt
+                            plt.figure()
+                            plt.plot(list(range(1, len(scores)+1)), scores, marker='o')
+                            plt.xlabel('Partie')
+                            plt.ylabel('Score')
+                            plt.title('Scores par partie')
+                            plt.grid(True)
+                            plt.show()
+
     def update_game(self):
-        self.screen.fill(setting.color['background'][2])
+        # fond selon thème
+        base_bg = setting.get_background_color()
+        self.screen.fill(base_bg)
 
         for x in range(self.nb_casex):
             for y in range(self.nb_casey):
                 new_x, new_y = x * self.size_case, y * self.size_case
-                pygame.draw.rect(self.screen, setting.color['background'][0], [new_x, new_y, self.size_case, self.size_case], width=(0 if self.is_grid else 1))
+                pygame.draw.rect(self.screen, base_bg, [new_x, new_y, self.size_case, self.size_case], width=(0 if self.is_grid else 1))
 
         for block in self.snake.body:
             if self.snake.is_rect:
@@ -148,21 +207,6 @@ class Game:
 
         self.draw_snake_eyes(self.screen, self.snake, head_snake, self.size_case)
 
-        if head_rect.colliderect(food_rect):
-            pygame.mixer.music.set_volume(0.2)
-            self.sound.play()
-            pygame.mixer.music.set_volume(0.5)
-            self.snake.apple  = self.snake.respawn_apple()
-            self.snake.body.append(self.snake.apple)
-            self.score += 1
-            self.snake.is_rect = not self.snake.is_rect
-
-        if head_snake[0] not in range(1, self.nb_casex-1) or head_snake[1] not in range(1, self.nb_casey-1):
-            self.menu
-            self.snake.origin_body()
-            self.snake.apple = self.snake.respawn_apple()
-            self.snake.direction = (0, 0)
-            self.score = 0
 
 
         mouse_pos = pygame.mouse.get_pos()
@@ -190,26 +234,140 @@ class Game:
 
         key = pygame.key.get_pressed()
 
-        # haut
-        if key[pygame.K_UP] and self.snake.direction != (0, -1):
-            self.snake.set_direction(self.snake.directions['up'])
+        # Mode IA simple: aller vers la pomme (évite le mouvement inverse)
+        if setting.is_ai_enabled():
+            head = self.snake.body[0]
+            ax, ay = self.snake.apple
+            dx = ax - head[0]
+            dy = ay - head[1]
+            prefer_horizontal = abs(dx) >= abs(dy)
+            candidate = None
+            if prefer_horizontal:
+                if dx > 0:
+                    candidate = self.snake.directions['right']
+                elif dx < 0:
+                    candidate = self.snake.directions['left']
+            else:
+                if dy > 0:
+                    candidate = self.snake.directions['down']
+                elif dy < 0:
+                    candidate = self.snake.directions['up']
+            # si candidate est l'opposé, essayer l'autre axe
+            if candidate is not None:
+                opp = (-self.snake.direction[0], -self.snake.direction[1])
+                if candidate == opp:
+                    # essayer autre axe
+                    if prefer_horizontal:
+                        if dy > 0:
+                            candidate = self.snake.directions['down']
+                        elif dy < 0:
+                            candidate = self.snake.directions['up']
+                    else:
+                        if dx > 0:
+                            candidate = self.snake.directions['right']
+                        elif dx < 0:
+                            candidate = self.snake.directions['left']
+                # appliquer si non inverse
+                if candidate is not None and candidate != opp:
+                    # vérifier collision immédiate
+                    head = self.snake.body[0]
+                    proposed = (head[0] + candidate[0], head[1] + candidate[1])
+                    if proposed not in self.snake.body:
+                        self.snake.set_direction(candidate)
+        else:
+            # haut
+            if key[pygame.K_UP] and self.snake.direction != (0, -1):
+                self.snake.set_direction(self.snake.directions['up'])
 
-        # bas
-        if key[pygame.K_DOWN] and self.snake.direction != (0, 1):
-            self.snake.set_direction(self.snake.directions['down'])
+            # bas
+            if key[pygame.K_DOWN] and self.snake.direction != (0, 1):
+                self.snake.set_direction(self.snake.directions['down'])
 
-        # gauche
-        if key[pygame.K_LEFT] and self.snake.direction != (1, 0):
-            self.snake.set_direction(self.snake.directions['left'])
+            # gauche
+            if key[pygame.K_LEFT] and self.snake.direction != (1, 0):
+                self.snake.set_direction(self.snake.directions['left'])
 
-        # droite
-        if key[pygame.K_RIGHT] and self.snake.direction != (1, 0):
-            self.snake.set_direction(self.snake.directions['right'])
+            # droite
+            if key[pygame.K_RIGHT] and self.snake.direction != (1, 0):
+                self.snake.set_direction(self.snake.directions['right'])
 
-        if key[pygame.K_t] and self.snake.direction != (0, 1):
-            self.snake.set_direction(self.snake.directions['stop'])
+            if key[pygame.K_t] and self.snake.direction != (0, 1):
+                self.snake.set_direction(self.snake.directions['stop'])
 
-        self.snake.move()
+        # avancer (wrap si cheat actif)
+        self.snake.move(wrap=self.cheat)
+
+        # recalculer positions après déplacement
+        head_snake = self.snake.body[0]
+        food_snake = self.snake.apple
+        head_rect = pygame.Rect(head_snake[0] * self.size_case, head_snake[1] * self.size_case, self.size_case, self.size_case)
+        food_rect = pygame.Rect(food_snake[0] * self.size_case, food_snake[1] * self.size_case, self.size_case, self.size_case)
+
+        # manger la pomme ?
+        if head_snake == food_snake:
+            vol = setting.settings.get('volume', 80) / 100
+            try:
+                pygame.mixer.music.set_volume(max(0.0, vol * 0.2))
+            except Exception:
+                pass
+            try:
+                self.sound.play()
+            except Exception:
+                pass
+            try:
+                pygame.mixer.music.set_volume(vol)
+            except Exception:
+                pass
+            # particules à la position de la pomme
+            cx = food_snake[0] * self.size_case + self.size_case / 2
+            cy = food_snake[1] * self.size_case + self.size_case / 2
+            for i in range(12):
+                vx = random.uniform(-2, 2)
+                vy = random.uniform(-3, -0.5)
+                life = random.randint(18, 32)
+                color = self.snake.apple_color if isinstance(self.snake.apple_color, tuple) else (255, 255, 255)
+                self.particles.append(Particle(cx, cy, vx, vy, life, color))
+
+            # respawn apple, agrandir et increment score
+            self.snake.apple = self.snake.respawn_apple()
+            self.snake.body.append(self.snake.apple)
+            self.score += 1
+            self.snake.is_rect = not self.snake.is_rect
+
+        # collision mur ou auto-collision
+        out_of_bounds = not (1 <= head_snake[0] <= self.nb_casex-2 and 1 <= head_snake[1] <= self.nb_casey-2)
+        self_collision = head_snake in self.snake.body[1:]
+        if (out_of_bounds or self_collision) and not self.cheat:
+            # sauvegarder le score
+            setting.append_score(self.score)
+            # particules de mort
+            cx = head_snake[0] * self.size_case + self.size_case / 2
+            cy = head_snake[1] * self.size_case + self.size_case / 2
+            for i in range(20):
+                vx = random.uniform(-3, 3)
+                vy = random.uniform(-4, -1)
+                life = random.randint(20, 40)
+                color = (255, 0, 0)
+                self.particles.append(Particle(cx, cy, vx, vy, life, color))
+            # reset
+            self.snake.origin_body()
+            self.snake.apple = self.snake.respawn_apple()
+            self.snake.direction = (0, 0)
+            self.score = 0
+
+        # afficher meilleur score
+        best = setting.settings.get('best_score', 0)
+        self.screen.blit(pygame.font.Font(None, 28).render(f"Best: {best}", True, [255, 255, 255]), [self.size_screen[0]-150, 5])
+
+        # update et dessiner particules
+        for p in list(self.particles):
+            p.update()
+            p.draw(self.screen)
+            if p.life <= 0:
+                try:
+                    self.particles.remove(p)
+                except ValueError:
+                    pass
 
         pygame.display.flip()
         pygame.display.update()
@@ -222,7 +380,7 @@ class Game:
             self.get_event_game() # detecte les evement du jeu
 
             self.update_game() # met a jour le jeu
-            
+
 
 game = Game()
 game.run_game()

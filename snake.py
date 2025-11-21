@@ -43,10 +43,13 @@ class Snake:
                     break
         return (x, y)
     
-    def move(self):
+    def move(self, wrap: bool = False):
         if self.direction != (0, 0):
             head = self.body[0]
-            new_head = (head[0] + self.direction[0], head[1] + self.direction[1])
-            
+            if wrap:
+                new_head = ((head[0] + self.direction[0]) % self.x, (head[1] + self.direction[1]) % self.y)
+            else:
+                new_head = (head[0] + self.direction[0], head[1] + self.direction[1])
+
             self.body.insert(0, new_head)
             self.body.pop()

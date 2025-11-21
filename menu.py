@@ -1,5 +1,5 @@
 import pygame
-from setting import colors, draw_button, color
+import setting
 import sys
 
 class Menu:
@@ -15,6 +15,11 @@ class Menu:
 
         self.screen = screen
         self.running = True
+        # Charger les réglages persistants au démarrage
+        try:
+            setting.load_settings()
+        except Exception:
+            pass
 
     def stop(self, bool : bool):
         if bool:
@@ -31,7 +36,7 @@ class Menu:
                 sys.exit()
 
     def update_game(self):
-        self.screen.fill(color['background'][0])
+        self.screen.fill(setting.get_background_color())
 
         key_pressed = pygame.key.get_pressed()
         mouse_pos = pygame.mouse.get_pos()
@@ -45,15 +50,15 @@ class Menu:
         )
 
         # Bouton Jouer
-        draw_button(
+        setting.draw_button(
             self.screen,
             "Jouer",
             W // 2,
             H // 2 - 120,
             "center",
-            color['bouton_on'],
+            setting.color['bouton_on'],
             (255, 255, 255),
-            color['bouton_off'],
+            setting.color['bouton_off'],
             mouse_pos,
             mouse_clicked,
             key_pressed,
@@ -63,15 +68,15 @@ class Menu:
         )
 
         # Bouton Options
-        draw_button(
+        setting.draw_button(
             self.screen,
             "Options",
             W // 2,
             H // 2,
             "center",
-            color['bouton_on'],
+            setting.color['bouton_on'],
             (255, 255, 255),
-            color['bouton_off'],
+            setting.color['bouton_off'],
             mouse_pos,
             mouse_clicked,
             key_pressed,
@@ -81,15 +86,15 @@ class Menu:
         )
 
         # Bouton Quitter
-        draw_button(
+        setting.draw_button(
             self.screen,
             "Quitter",
             W // 2,
             H // 2 + 120,
             "center",
-            color['bouton_on'],
+            setting.color['bouton_on'],
             (255, 255, 255),
-            color['bouton_off'],
+            setting.color['bouton_off'],
             mouse_pos,
             mouse_clicked,
             key_pressed,
@@ -111,7 +116,12 @@ class Menu:
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                     options_running = False
 
-            self.screen.fill(color['background'][0])
+            # récupérer états
+            key_pressed = pygame.key.get_pressed()
+            mouse_pos = pygame.mouse.get_pos()
+            mouse_clicked = pygame.mouse.get_pressed()
+
+            self.screen.fill(setting.get_background_color())
             W, H = self.screen.get_size()
 
             # Title
@@ -120,24 +130,98 @@ class Menu:
                 [W // 2 - 50, 20]
             )
 
-            # Volume option
+            # helpers pour actions
+            def change_volume(delta):
+                vol = int(setting.settings.get('volume', 80))
+                vol = max(0, min(100, vol + delta))
+                setting.set_volume(vol)
+
+            def next_theme():
+                setting.cycle_theme(next=True)
+
+            def prev_theme():
+                setting.cycle_theme(next=False)
+
+            def reset_best():
+                setting.set_best_score(0)
+
+            def exit_options():
+                nonlocal options_running
+                options_running = False
+
+            # Volume option + / -
+            vol = setting.settings.get('volume', 80)
             self.screen.blit(
-                pygame.font.Font(None, 24).render("Volume: 80%", True, [255, 255, 255]),
-                [W // 2 - 100, H // 2 - 80]
+                pygame.font.Font(None, 24).render(f"Volume: {vol}%", True, [255, 255, 255]),
+                [W // 2 - 40, H // 2 - 80]
             )
+
+            setting.draw_button(self.screen, "-", W // 2 - 120, H // 2 - 70, "center",
+                                setting.color['bouton_on'], (255, 255, 255), setting.color['bouton_off'],
+                                mouse_pos, mouse_clicked, key_pressed,
+                                command_left=lambda: change_volume(-10),
+                                width=60, height=40)
+
+            setting.draw_button(self.screen, "+", W // 2 + 120, H // 2 - 70, "center",
+                                setting.color['bouton_on'], (255, 255, 255), setting.color['bouton_off'],
+                                mouse_pos, mouse_clicked, key_pressed,
+                                command_left=lambda: change_volume(10),
+                                width=60, height=40)
 
             # Theme option
+            theme_idx = int(setting.settings.get('theme_index', 0))
+            bg_list = setting.color.get('background')
+            theme_count = len(bg_list) if isinstance(bg_list, list) else 1
             self.screen.blit(
-                pygame.font.Font(None, 24).render("Theme: Dark", True, [255, 255, 255]),
-                [W // 2 - 100, H // 2]
+                pygame.font.Font(None, 24).render(f"Theme: {theme_idx + 1}/{theme_count}", True, [255, 255, 255]),
+                [W // 2 - 40, H // 2]
             )
 
-            # Best score option
+            setting.draw_button(self.screen, "<", W // 2 - 120, H // 2 + 10, "center",
+                                setting.color['bouton_on'], (255, 255, 255), setting.color['bouton_off'],
+                                mouse_pos, mouse_clicked, key_pressed,
+                                command_left=prev_theme,
+                                width=60, height=40)
+            setting.draw_button(self.screen, ">", W // 2 + 120, H // 2 + 10, "center",
+                                setting.color['bouton_on'], (255, 255, 255), setting.color['bouton_off'],
+                                mouse_pos, mouse_clicked, key_pressed,
+                                command_left=next_theme,
+                                width=60, height=40)
+
+            # AI toggle
+            ai_status = "On" if setting.is_ai_enabled() else "Off"
             self.screen.blit(
-                pygame.font.Font(None, 24).render("Best Score: 150", True, [255, 255, 255]),
-                [W // 2 - 100, H // 2 + 80]
+                pygame.font.Font(None, 22).render(f"AI: {ai_status}", True, [255, 255, 255]),
+                [W // 2 - 40, H // 2 + 40]
             )
 
+            setting.draw_button(self.screen, "AI", W // 2 + 120, H // 2 + 40, "center",
+                                setting.color['bouton_on'], (255, 255, 255), setting.color['bouton_off'],
+                                mouse_pos, mouse_clicked, key_pressed,
+                                command_left=setting.toggle_ai,
+                                width=80, height=40)
+
+            # Best score
+            best = setting.settings.get('best_score', 0)
+            self.screen.blit(
+                pygame.font.Font(None, 24).render(f"Best Score: {best}", True, [255, 255, 255]),
+                [W // 2 - 60, H // 2 + 80]
+            )
+
+            setting.draw_button(self.screen, "Reset", W // 2 + 120, H // 2 + 80, "center",
+                                setting.color['bouton_on'], (255, 255, 255), setting.color['bouton_off'],
+                                mouse_pos, mouse_clicked, key_pressed,
+                                command_left=reset_best,
+                                width=100, height=50)
+
+            # Back button
+            setting.draw_button(self.screen, "Retour", W // 2, H - 80, "center",
+                                setting.color['bouton_on'], (255, 255, 255), setting.color['bouton_off'],
+                                mouse_pos, mouse_clicked, key_pressed,
+                                command_left=exit_options,
+                                width=140, height=50)
+
+            # Note: Use ESC pour revenir
             pygame.display.flip()
             self.timer.tick(self.fps)
 

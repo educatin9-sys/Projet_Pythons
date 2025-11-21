@@ -1,4 +1,9 @@
 import pygame
+import json
+from pathlib import Path
+
+# Fichier de stockage des réglages
+SETTINGS_FILE = Path(__file__).parent / "settings.json"
 
 theme = "rgb()"
 
@@ -29,6 +34,96 @@ color = {
     "body" : (172, 243, 58),
     "head" : (255, 0, 0)
 }
+
+
+# Réglages persistants (volume en %, theme_index référence l'index dans color['background'], best_score entier)
+settings = {
+    "volume": 80,
+    "theme_index": 0,
+    "best_score": 0,
+    "scores": [],
+    "ai": False
+}
+
+
+def load_settings():
+    try:
+        if SETTINGS_FILE.exists():
+            with open(SETTINGS_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                # merge defaults
+                settings.update({k: data.get(k, v) for k, v in settings.items()})
+        else:
+            save_settings()
+    except Exception:
+        # si problème de lecture, réécrire les paramètres par défaut
+        save_settings()
+
+
+def save_settings():
+    try:
+        with open(SETTINGS_FILE, "w", encoding="utf-8") as f:
+            json.dump(settings, f, ensure_ascii=False, indent=2)
+    except Exception:
+        pass
+
+
+def get_background_color():
+    bg_list = color.get("background")
+    if isinstance(bg_list, list) and bg_list:
+        idx = int(settings.get("theme_index", 0)) % len(bg_list)
+        return bg_list[idx]
+    # fallback
+    return bg_list if isinstance(bg_list, tuple) else (0, 0, 0)
+
+
+def cycle_theme(next=True):
+    bg_list = color.get("background")
+    if not isinstance(bg_list, list) or not bg_list:
+        return
+    length = len(bg_list)
+    idx = int(settings.get("theme_index", 0))
+    idx = (idx + 1) % length if next else (idx - 1) % length
+    settings["theme_index"] = idx
+    save_settings()
+
+
+def set_volume(value: int):
+    settings["volume"] = max(0, min(100, int(value)))
+    save_settings()
+
+
+def set_best_score(value: int):
+    settings["best_score"] = int(value)
+    save_settings()
+
+
+def append_score(value: int):
+    try:
+        settings.setdefault('scores', [])
+        settings['scores'].append(int(value))
+        # keep last 100 scores
+        if len(settings['scores']) > 100:
+            settings['scores'] = settings['scores'][-100:]
+        # update best
+        if int(value) > settings.get('best_score', 0):
+            settings['best_score'] = int(value)
+        save_settings()
+    except Exception:
+        pass
+
+
+def get_scores():
+    return list(settings.get('scores', []))
+
+
+def toggle_ai():
+    settings['ai'] = not bool(settings.get('ai', False))
+    save_settings()
+
+
+def is_ai_enabled():
+    return bool(settings.get('ai', False))
 
 def draw_button(
     screen,
