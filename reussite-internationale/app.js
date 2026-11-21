@@ -52,6 +52,7 @@ $$(".choices").forEach((groupe) => {
     if (!btn) return;
     $$(".choice", groupe).forEach((b) => b.classList.toggle("active", b === btn));
     choix[groupe.dataset.name] = btn.dataset.value;
+    if (groupe.dataset.name === "domaine") majAutre();
     if (groupe.dataset.name === "niveau" && btn.dataset.value === "Année de langue") {
       choisirDans("domaine", "Langue chinoise");
     } else if (groupe.dataset.name === "niveau" && choix.domaine === "Langue chinoise") {
@@ -63,6 +64,24 @@ function choisirDans(nom, valeur) {
   const groupe = $(`.choices[data-name="${nom}"]`);
   $$(".choice", groupe).forEach((b) => b.classList.toggle("active", b.dataset.value === valeur));
   choix[nom] = valeur;
+  if (nom === "domaine") majAutre();
+}
+
+// Champ « Autre » : l'élève écrit lui-même la formation qu'il cherche
+const sansAccent = (t) => String(t).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+function majAutre() {
+  const box = $("#sim-autre-box");
+  box.hidden = choix.domaine !== "Autre";
+  if (!box.hidden) $("#sim-autre").focus();
+}
+$("#sim-autre-list").innerHTML = [...new Set(UNIVERSITES.map((u) => u.programme))].map((p) => `<option value="${esc(p)}">`).join("");
+function correspondDomaine(u) {
+  if (choix.domaine === "Tous") return true;
+  if (choix.domaine !== "Autre") return u.domaine === choix.domaine;
+  const mots = sansAccent($("#sim-autre").value).split(/[\s,/'-]+/).filter((m) => m.length > 2);
+  if (!mots.length) return false;
+  const texte = sansAccent(`${u.programme} ${u.domaine}`);
+  return mots.some((m) => texte.includes(m));
 }
 
 const moyenneInput = $("#sim-moyenne");
@@ -130,9 +149,15 @@ $("#sim-form").addEventListener("submit", (e) => {
   const anglais = parseInt(choix.anglais, 10);
   const budget = parseInt($("#sim-budget").value, 10);
   const age = parseInt($("#sim-age").value, 10) || 0;
+  const formationAutre = choix.domaine === "Autre" ? $("#sim-autre").value.trim() : "";
+  if (choix.domaine === "Autre" && !formationAutre) {
+    $("#sim-autre").focus();
+    $("#sim-results").innerHTML = `<div class="alert">Écrivez la formation que vous cherchez dans le champ « Quelle formation cherchez-vous ? ».</div>`;
+    return;
+  }
 
   const candidats = UNIVERSITES
-    .filter((u) => u.niveau === choix.niveau && (choix.domaine === "Tous" || u.domaine === choix.domaine))
+    .filter((u) => u.niveau === choix.niveau && correspondDomaine(u))
     .map((u) => evaluer(u, moyenne, anglais));
 
   const possibles = candidats.filter((u) => u.chance);
@@ -161,6 +186,20 @@ $("#sim-form").addEventListener("submit", (e) => {
     if (voeux.length >= 2) {
       html += `<div class="voeux"><h3>Nos 3 vœux conseillés</h3><ol>${voeux.map(([u, t]) => `<li><b>${t}</b> : ${esc(u.nom)}</li>`).join("")}</ol></div>`;
     }
+  }
+
+  if (formationAutre && !candidats.length) {
+    const msg = `Bonjour Réussite Internationale, je cherche une formation en « ${formationAutre} » (${choix.niveau}) en Chine. Ma moyenne : ${moyenneInput.value}/20. Budget par an : ${$("#sim-budget").selectedOptions[0].textContent}. Pouvez-vous m'aider ?`;
+    zone.innerHTML = `<div class="request">
+      <span class="quick-ic gold"><svg class="ic"><use href="#i-search"/></svg></span>
+      <h2>« ${esc(formationAutre)} » : on la cherche pour vous</h2>
+      <p>Cette formation n'est pas encore dans notre simulateur, mais beaucoup d'universités chinoises la proposent. Envoyez-nous votre demande : un conseiller vous répond avec les universités possibles, leurs prix et vos chances.</p>
+      <a class="btn btn-lg btn-wa" href="${waLink(msg)}" target="_blank" rel="noopener"><svg class="ic"><use href="#i-chat"/></svg> Envoyer ma demande sur WhatsApp</a>
+      <p class="muted small">Votre demande contient déjà la formation, votre niveau, votre moyenne et votre budget.</p>
+    </div>`;
+    $("#f-domaine").value = formationAutre;
+    if (window.innerWidth < 1000) zone.scrollIntoView({ behavior: "smooth" });
+    return;
   }
 
   if (!dansBudget.length) {
