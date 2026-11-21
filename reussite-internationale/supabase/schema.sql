@@ -35,7 +35,7 @@ create table if not exists public.dossiers (
 
 -- Date de mise à jour automatique
 create or replace function public.maj_date() returns trigger
-language plpgsql as $$
+language plpgsql set search_path = public as $$
 begin
   new.maj_le := now();
   return new;
@@ -54,6 +54,10 @@ create or replace function public.est_admin() returns boolean
 language sql stable security definer set search_path = public as $$
   select exists (select 1 from public.admins where user_id = auth.uid());
 $$;
+
+revoke execute on function public.est_admin() from public, anon;
+grant execute on function public.est_admin() to authenticated;
+revoke execute on function public.maj_date() from public, anon, authenticated;
 
 -- Règles d'accès : tout pour les administrateurs, rien pour les autres
 alter table public.dossiers enable row level security;

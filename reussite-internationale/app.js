@@ -47,7 +47,6 @@ if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches)
   const svg = document.querySelector(".mo-svg");
   if (svg && svg.pauseAnimations) { svg.pauseAnimations(); svg.setCurrentTime && svg.setCurrentTime(3); }
 }
-$("#lien-agence").href = LIEN_ESPACE_AGENCE;
 
 /* ---------- Simulateur de budget ----------
    La liste UNIVERSITES (data.js) sert seulement de base de calcul :
