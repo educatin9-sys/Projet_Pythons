@@ -4,7 +4,16 @@ Site de l'agence Réussite Internationale (études en Chine) : accueil, simulate
 
 - `index.html`, `style.css`, `app.js` : le site (une page, écrans par ancre `#accueil`, `#simulateur`, `#suivi`, `#espace`, `#guide`, `#inscription`).
 - `data.js` : toutes les données modifiables (WhatsApp, pack, **liste des universités**, dossiers de démonstration).
-- `espace-agence/index.html` : copie de l'espace agence (ne fonctionne que publié sur claude.ai, base de données privée).
+- `admin.html` : espace agence (connexion par lien e-mail, réservé aux administrateurs) pour créer et suivre les dossiers.
+- `config.js` : adresse du projet Supabase et clé **publique** (jamais la clé secrète).
+- `supabase/schema.sql` : base de données (table des dossiers protégée, fonction `dossier_eleve` pour l'espace élève).
+
+## Comment ça marche
+
+1. L'agence inscrit l'élève dans `admin.html` ; un code aléatoire est créé (ex. RI-K7P3-9QX2).
+2. L'élève tape ce code dans « Mon espace » sur le site : il voit son étape, ses documents, ses paiements et la prochaine action.
+3. Le téléphone, les notes internes et les dépenses de l'agence ne sont jamais envoyés à l'élève.
+4. Ajouter un administrateur : créer l'utilisateur dans Supabase (Authentication > Users), puis l'ajouter à la table `admins` (voir la fin de `schema.sql`).
 
 ## Mise à jour hebdomadaire de la liste des universités
 

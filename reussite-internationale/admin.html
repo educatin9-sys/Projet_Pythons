@@ -1,5 +1,10 @@
-<title>Espace Réussite Internationale</title>
-<meta name="claude:viewport-fit-sides" content="cover">
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Espace agence · Réussite Internationale</title>
+<meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -31,6 +36,19 @@
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
+html, body { margin: 0; }
+.login { min-height: 100vh; display: grid; place-items: center; padding: 24px max(16px, env(safe-area-inset-left, 0px)); }
+.login-card { width: min(420px, 100%); background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 28px; box-shadow: var(--shadow); display: grid; gap: 14px; }
+.login-card h1 { font-size: 1.35rem; }
+.login-card p { margin: 0; color: var(--muted); }
+.login-card input { padding: .7em .8em; border: 1.5px solid var(--line); border-radius: 10px; background: var(--bg); font-size: 1rem; }
+.ok-msg { background: var(--green-soft); color: var(--ink); border-radius: 10px; padding: 12px 14px; }
+.doc-row { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: center; padding: 6px 10px; border-radius: 10px; background: var(--bg); border: 1.5px solid var(--line); }
+.doc-row.on { border-color: var(--green); background: var(--green-soft); }
+.doc-row input[type=text] { padding: .45em .6em; border: 1.5px solid var(--line); border-radius: 8px; background: var(--surface); width: 100%; min-width: 0; }
+.doc-row input[type=checkbox] { width: 20px; height: 20px; accent-color: var(--green); }
+.code-box { display: flex; gap: 8px; }
+.code-box input { flex: 1; font-weight: 700; letter-spacing: .05em; }
 body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.5; }
 h1, h2, h3 { font-family: var(--font-title); margin: 0; line-height: 1.2; text-wrap: balance; }
 button, input, select, textarea { font: inherit; color: inherit; }
@@ -161,17 +179,34 @@ label.f { display: grid; gap: 5px; font-weight: 600; font-size: .88rem; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
+</head>
+<body>
 
-<div class="wrap">
+
+<section class="login" id="login" hidden>
+  <form class="login-card" id="login-form">
+    <span class="mark">RI</span>
+    <h1>Espace agence</h1>
+    <p>Entrez votre adresse e-mail : vous recevrez un lien de connexion. Cliquez dessus depuis ce même appareil.</p>
+    <label class="f" for="l-email">Adresse e-mail<input id="l-email" type="email" autocomplete="email" required></label>
+    <button class="btn" type="submit" id="l-btn">Recevoir mon lien de connexion</button>
+    <p class="err" id="l-err" hidden></p>
+    <div class="ok-msg" id="l-ok" hidden></div>
+    <p class="help">Seuls les comptes autorisés par l'agence peuvent se connecter.</p>
+  </form>
+</section>
+
+<div class="wrap" id="app" hidden>
   <header class="top">
     <div class="brand">
       <span class="mark">RI</span>
       <div><h1>Espace agence</h1><p>Réussite Internationale · gestion des élèves et des dossiers</p></div>
     </div>
     <div class="actions">
-      <a class="btn btn-ghost" href="https://claude.ai/artifact/SVAFTown9ae21bB4ZFnqM7" target="_blank" rel="noopener">Voir le site public</a>
+      <a class="btn btn-ghost" href="./index.html" target="_blank" rel="noopener">Voir le site public</a>
       <button class="btn btn-ghost" id="btn-export" hidden>Exporter (Excel/CSV)</button>
       <button class="btn" id="btn-new">+ Nouvel élève</button>
+      <button class="btn btn-ghost" id="btn-out">Se déconnecter</button>
     </div>
   </header>
 
@@ -181,7 +216,7 @@ label.f { display: grid; gap: 5px; font-weight: 600; font-size: .88rem; }
     <summary>Comment utiliser cet espace ? (cliquez pour lire)</summary>
     <ol>
       <li>Quand quelqu’un vous écrit sur WhatsApp, ajoutez-le avec <b>« + Nouvel élève »</b>. Il commence à l’étape <b>Prospect</b> (intéressé, mais pas encore signé).</li>
-      <li>Donnez-lui son <b>code de dossier</b> (ex. RI-2026-003) : il lui servira à suivre son dossier sur le site.</li>
+      <li>Donnez-lui son <b>code de dossier</b> (ex. RI-K7P3-9QX2) : il le tape dans « Mon espace » sur le site pour suivre son dossier. Le code est créé au hasard pour que personne ne puisse deviner celui d’un autre.</li>
       <li>À chaque avancée, cliquez sur l’élève et changez son <b>étape</b>. Écrivez la <b>prochaine action</b> à faire.</li>
       <li>Quand la famille paie, cochez la tranche <b>« Payée »</b>. Vous pouvez changer le montant et le nombre de tranches pour chaque élève.</li>
       <li>En haut, les chiffres se calculent tout seuls : argent reçu, argent encore attendu, et ce qu’il vous reste après vos dépenses.</li>
@@ -232,7 +267,11 @@ label.f { display: grid; gap: 5px; font-weight: 600; font-size: .88rem; }
     <div class="f"><span>Sexe <span class="help">(pour l’avatar dans son espace sur le site)</span></span>
       <div class="sexe" id="e-sexe"><button type="button" data-v="F">Fille</button><button type="button" data-v="M">Garçon</button></div>
     </div>
-    <label class="f" for="e-uni">Université visée<input id="e-uni" placeholder="Ex. NUAA — Ingénierie aérospatiale"></label>
+    <label class="f" for="e-uni">Université visée <span class="help">(visible par l’élève)</span><input id="e-uni" placeholder="Ex. Nanjing University of Aeronautics and Astronautics"></label>
+    <div class="grid2">
+      <label class="f" for="e-prog">Formation <span class="help">(visible par l’élève)</span><input id="e-prog" placeholder="Ex. Licence Ingénierie aérospatiale"></label>
+      <label class="f" for="e-ville">Ville en Chine<input id="e-ville" placeholder="Ex. Nanjing"></label>
+    </div>
 
     <div class="section-t">Étape du dossier <span class="help">(cliquez sur l’étape où il en est)</span></div>
     <div class="steps" id="e-steps"></div>
@@ -241,17 +280,22 @@ label.f { display: grid; gap: 5px; font-weight: 600; font-size: .88rem; }
       <label class="f" for="e-statut">Statut
         <select id="e-statut"><option value="actif">Actif (le dossier avance)</option><option value="pause">En pause (on attend l’élève)</option><option value="termine">Terminé (arrivé en Chine)</option><option value="abandon">Abandonné</option></select>
       </label>
-      <label class="f" for="e-code">Code de dossier <span class="help">(à donner à l’élève)</span><input id="e-code"></label>
+      <div class="f"><label for="e-code">Code de dossier <span class="help">(à donner à l’élève)</span></label>
+        <div class="code-box"><input id="e-code"><button type="button" class="btn btn-ghost btn-sm" id="e-copy">Copier</button></div></div>
     </div>
 
     <div class="section-t">Paiements de l’élève <span class="help">(modifiez les montants, ajoutez ou retirez des tranches, cochez la case quand c’est payé)</span></div>
     <div class="pay-edit" id="e-pay"></div>
     <button type="button" class="btn btn-ghost btn-sm" id="e-pay-add" style="justify-self:start">+ Ajouter une tranche</button>
 
+    <div class="section-t">Documents de l’élève <span class="help">(cochez quand vous l’avez reçu ; visible par l’élève)</span></div>
+    <div class="pay-edit" id="e-docs"></div>
+    <button type="button" class="btn btn-ghost btn-sm" id="e-doc-add" style="justify-self:start">+ Ajouter un document</button>
+
     <label class="f" for="e-charges">Dépenses pour ce dossier (FCFA) <span class="help">(frais de dossier, traductions, envois… ce que vous avez payé de votre poche)</span><input id="e-charges" type="number" min="0" step="1000" inputmode="numeric"></label>
     <div class="money" id="e-money"></div>
 
-    <label class="f" for="e-next">Prochaine action <span class="help">(ce qu’il faut faire maintenant)</span><input id="e-next" placeholder="Ex. Relancer pour la traduction du relevé de notes"></label>
+    <label class="f" for="e-next">Prochaine action <span class="help">(ce qu’il faut faire maintenant ; visible par l’élève)</span><input id="e-next" placeholder="Ex. Relancer pour la traduction du relevé de notes"></label>
     <label class="f" for="e-notes">Notes internes <span class="help">(pour vous seulement)</span><textarea id="e-notes" rows="4" placeholder="Pas de numéro de passeport ni de données bancaires ici."></textarea></label>
     <p class="err" id="e-err" hidden></p>
   </form>
@@ -268,6 +312,7 @@ label.f { display: grid; gap: 5px; font-weight: 600; font-size: .88rem; }
 </aside>
 <div class="toast" id="toast" hidden></div>
 
+<script src="config.js"></script>
 <script>
 const CHARGES_DEFAUT = 200000;
 const ETAPES = ["Prospect", "Diagnostic", "Vœux", "Dossier", "Admission & visa", "Accueil Chine"];
@@ -276,6 +321,7 @@ const STATUTS = { actif: "Actif", pause: "En pause", termine: "Terminé", abando
 const $ = (s) => document.querySelector(s);
 const fmt = (n) => new Intl.NumberFormat("fr-FR").format(Math.round(n || 0));
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const DOCUMENTS_DEFAUT = () => ["Passeport", "Diplôme et relevés du bac", "Photos d'identité", "Lettre de motivation", "Certificat médical", "Casier judiciaire"].map((nom) => ({ nom, ok: false }));
 const PAIEMENTS_DEFAUT = () => [
   { libelle: "À la signature", montant: 500000, payee: false },
   { libelle: "À l'admission + JW202", montant: 700000, payee: false },
@@ -290,7 +336,7 @@ const nbTranches = (d) => paiements(d).filter((p) => p.payee).length;
 const charges = (d) => (typeof d.charges === "number" ? d.charges : CHARGES_DEFAUT);
 const avancement = (d) => d.statut === "termine" ? 100 : Math.round(((d.etape || 0) / 5) * 100);
 
-let db = null, dossiers = [], filtreEtape = null, enEdition = null, brouillon = null, confirmDelete = false;
+let dossiers = [], filtreEtape = null, enEdition = null, brouillon = null, confirmDelete = false;
 
 function toast(msg) {
   const t = $("#toast"); t.textContent = msg; t.hidden = false;
@@ -324,7 +370,7 @@ function render() {
     .filter((d) => filtreEtape === null || (d.etape || 0) === filtreEtape)
     .filter((d) => !st || d.statut === st)
     .filter((d) => !q || [d.prenom, d.nom, d.code, d.universite, d.pays, d.domaine, d.telephone].join(" ").toLowerCase().includes(q))
-    .sort((a, b) => String(b.majLe || "").localeCompare(String(a.majLe || "")));
+    .sort((a, b) => String(b.maj_le || "").localeCompare(String(a.maj_le || "")));
 
   const list = $("#list");
   if (!dossiers.length) {
@@ -360,24 +406,26 @@ $("#list").addEventListener("click", (e) => {
 
 /* ---------- Édition ---------- */
 function prochainCode() {
-  const an = new Date().getFullYear();
-  const nums = dossiers.map((d) => (String(d.code || "").match(new RegExp(`^RI-${an}-(\\d+)$`)) || [])[1]).filter(Boolean).map(Number);
-  return `RI-${an}-${String((nums.length ? Math.max(...nums) : 0) + 1).padStart(3, "0")}`;
+  // 8 caractères au hasard (sans 0/O ni 1/I) : impossible à deviner
+  const A = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const n = crypto.getRandomValues(new Uint32Array(8));
+  const c = [...n].map((x) => A[x % A.length]).join("");
+  return `RI-${c.slice(0, 4)}-${c.slice(4)}`;
 }
 
 function ouvrir(d) {
   enEdition = d ? d.id : null;
-  brouillon = d ? { ...d, paiements: paiements(d).map((p) => ({ ...p })) } :
-    { prenom: "", nom: "", sexe: "", telephone: "", pays: "", niveau: "Licence", domaine: "", universite: "", etape: 0, statut: "actif", code: prochainCode(), paiements: PAIEMENTS_DEFAUT(), charges: CHARGES_DEFAUT, prochaine: "", notes: "" };
+  brouillon = d ? { ...d, paiements: paiements(d).map((p) => ({ ...p })), documents: (d.documents || []).map((x) => ({ ...x })) } :
+    { prenom: "", nom: "", sexe: "", telephone: "", pays: "", niveau: "Licence", domaine: "", universite: "", programme: "", ville: "", etape: 0, statut: "actif", code: prochainCode(), paiements: PAIEMENTS_DEFAUT(), documents: DOCUMENTS_DEFAUT(), charges: CHARGES_DEFAUT, prochaine: "", notes: "" };
   $("#d-title").textContent = d ? `${d.prenom} ${d.nom}`.trim() : "Nouvel élève";
   const set = (id, v) => ($(id).value = v ?? "");
   set("#e-prenom", brouillon.prenom); set("#e-nom", brouillon.nom); set("#e-tel", brouillon.telephone); set("#e-pays", brouillon.pays);
-  set("#e-niveau", brouillon.niveau || "Licence"); set("#e-domaine", brouillon.domaine); set("#e-uni", brouillon.universite);
+  set("#e-niveau", brouillon.niveau || "Licence"); set("#e-domaine", brouillon.domaine); set("#e-uni", brouillon.universite); set("#e-prog", brouillon.programme); set("#e-ville", brouillon.ville);
   set("#e-statut", brouillon.statut || "actif"); set("#e-code", brouillon.code); set("#e-charges", charges(brouillon));
   set("#e-next", brouillon.prochaine); set("#e-notes", brouillon.notes);
   $("#e-err").hidden = true;
   confirmDelete = false; $("#d-delete").textContent = "Supprimer"; $("#d-delete").hidden = !d;
-  majEtapes(); majSexe(); majPaiements(); majArgent(); majWa();
+  majEtapes(); majSexe(); majPaiements(); majDocs(); majArgent(); majWa();
   $("#overlay").hidden = false; $("#drawer").hidden = false;
   $("#e-prenom").focus();
 }
@@ -401,6 +449,14 @@ function majPaiements() {
       <button type="button" class="rm" data-rm="${i}" aria-label="Retirer la tranche ${i + 1}">×</button>
     </div>`).join("") +
     `<div class="pay-total"><span>Prix total pour cet élève</span><span>${fmt(prix(brouillon))} FCFA</span></div>`;
+}
+function majDocs() {
+  $("#e-docs").innerHTML = brouillon.documents.map((x, i) => `
+    <div class="doc-row ${x.ok ? "on" : ""}">
+      <input type="checkbox" id="e-d${i}" data-i="${i}" data-k="ok" ${x.ok ? "checked" : ""} aria-label="Document ${i + 1} reçu">
+      <input type="text" id="e-dn${i}" data-i="${i}" data-k="nom" value="${esc(x.nom)}" aria-label="Nom du document ${i + 1}">
+      <button type="button" class="rm" data-rm="${i}" aria-label="Retirer le document ${i + 1}">×</button>
+    </div>`).join("");
 }
 function majArgent() {
   const enc = encaisse(brouillon), ch = charges(brouillon);
@@ -439,35 +495,51 @@ $("#e-pay-add").addEventListener("click", () => {
   brouillon.paiements.push({ libelle: `Tranche ${brouillon.paiements.length + 1}`, montant: 0, payee: false });
   majPaiements(); majArgent();
 });
+$("#e-docs").addEventListener("input", (e) => {
+  const t = e.target, i = +t.dataset.i, k = t.dataset.k; if (!k) return;
+  if (k === "ok") { brouillon.documents[i].ok = t.checked; t.closest(".doc-row").classList.toggle("on", t.checked); }
+  else brouillon.documents[i].nom = t.value;
+});
+$("#e-docs").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-rm]"); if (!b) return;
+  brouillon.documents.splice(+b.dataset.rm, 1); majDocs();
+});
+$("#e-doc-add").addEventListener("click", () => { brouillon.documents.push({ nom: "", ok: false }); majDocs(); });
+$("#e-copy").addEventListener("click", async () => {
+  const v = $("#e-code").value;
+  try { await navigator.clipboard.writeText(v); toast("Code copié"); } catch { $("#e-code").select(); }
+});
 $("#e-charges").addEventListener("input", () => { brouillon.charges = Math.max(0, +$("#e-charges").value || 0); majArgent(); });
 $("#e-tel").addEventListener("input", majWa);
 
 async function enregistrer() {
-  if (!db) return;
   const prenom = $("#e-prenom").value.trim();
   if (!prenom) { $("#e-err").textContent = "Le prénom est obligatoire."; $("#e-err").hidden = false; return; }
   const data = {
     prenom, nom: $("#e-nom").value.trim(), telephone: $("#e-tel").value.trim(), pays: $("#e-pays").value.trim(),
     niveau: $("#e-niveau").value, domaine: $("#e-domaine").value.trim(), universite: $("#e-uni").value.trim(),
-    etape: brouillon.etape, statut: $("#e-statut").value, code: $("#e-code").value.trim() || prochainCode(),
-    sexe: brouillon.sexe || "", paiements: brouillon.paiements.map((p) => ({ libelle: String(p.libelle || "").trim(), montant: +p.montant || 0, payee: !!p.payee })), charges: Math.max(0, +$("#e-charges").value || 0),
+    programme: $("#e-prog").value.trim(), ville: $("#e-ville").value.trim(),
+    etape: brouillon.etape, statut: $("#e-statut").value, code: ($("#e-code").value.trim() || prochainCode()).toUpperCase(),
+    sexe: brouillon.sexe || "",
+    paiements: brouillon.paiements.map((p) => ({ libelle: String(p.libelle || "").trim(), montant: +p.montant || 0, payee: !!p.payee })),
+    documents: brouillon.documents.filter((x) => String(x.nom || "").trim()).map((x) => ({ nom: String(x.nom).trim(), ok: !!x.ok })),
+    charges: Math.max(0, +$("#e-charges").value || 0),
     prochaine: $("#e-next").value.trim(), notes: $("#e-notes").value.trim(),
-    creeLe: brouillon.creeLe || new Date().toISOString(), majLe: new Date().toISOString(),
   };
   const btn = $("#d-save"); btn.disabled = true;
   try {
-    const ref = enEdition ? db.collection("dossiers").doc(enEdition) : db.collection("dossiers").doc();
-    await ref.set(data);
-    fermer(); toast("Dossier enregistré");
+    if (enEdition) await api("PATCH", `/rest/v1/dossiers?id=eq.${encodeURIComponent(enEdition)}`, data);
+    else await api("POST", "/rest/v1/dossiers", data);
+    fermer(); toast("Dossier enregistré"); await charger();
   } catch (err) {
-    $("#e-err").textContent = err && err.code === "quota_exceeded" ? "La base est pleine : supprimez d'anciens dossiers." : "L'enregistrement a échoué. Vérifiez votre connexion et réessayez.";
+    $("#e-err").textContent = /duplicate|23505/.test(err.message) ? "Ce code de dossier existe déjà : changez-le." : "L'enregistrement a échoué. Vérifiez votre connexion et réessayez.";
     $("#e-err").hidden = false;
   } finally { btn.disabled = false; }
 }
 async function supprimer() {
-  if (!enEdition || !db) return;
+  if (!enEdition) return;
   if (!confirmDelete) { confirmDelete = true; $("#d-delete").textContent = "Confirmer la suppression"; return; }
-  try { await db.collection("dossiers").doc(enEdition).delete(); fermer(); toast("Dossier supprimé"); }
+  try { await api("DELETE", `/rest/v1/dossiers?id=eq.${encodeURIComponent(enEdition)}`); fermer(); toast("Dossier supprimé"); await charger(); }
   catch { $("#e-err").textContent = "La suppression a échoué. Réessayez."; $("#e-err").hidden = false; }
 }
 
@@ -480,36 +552,107 @@ $("#d-delete").addEventListener("click", supprimer);
 document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("#drawer").hidden) fermer(); });
 
 /* ---------- Export CSV ---------- */
-let downloads = null;
-$("#btn-export").addEventListener("click", async () => {
-  if (!downloads) return;
-  const cols = ["code", "prenom", "nom", "telephone", "pays", "niveau", "domaine", "universite", "etape", "statut", "prix", "tranchesPayees", "encaisse", "charges", "prochaine", "notes", "majLe"];
+$("#btn-export").hidden = false;
+$("#btn-export").addEventListener("click", () => {
+  const cols = ["code", "prenom", "nom", "telephone", "pays", "niveau", "domaine", "universite", "programme", "ville", "etape", "statut", "prix", "tranchesPayees", "encaisse", "charges", "prochaine", "notes", "maj_le"];
   const lignes = dossiers.map((d) => cols.map((c) => {
     const v = c === "etape" ? ETAPES[d.etape || 0] : c === "statut" ? STATUTS[d.statut] : c === "tranchesPayees" ? nbTranches(d) : c === "prix" ? prix(d) : c === "encaisse" ? encaisse(d) : c === "charges" ? charges(d) : d[c];
     return `"${String(v ?? "").replace(/"/g, '""')}"`;
   }).join(";"));
-  const csv = "﻿" + cols.join(";") + "\n" + lignes.join("\n");
-  try { await downloads.save({ filename: `dossiers-reussite-internationale-${new Date().toISOString().slice(0, 10)}.csv`, data: csv }); }
-  catch { toast("Export annulé"); }
+  const blob = new Blob(["\ufeff" + cols.join(";") + "\n" + lignes.join("\n")], { type: "text/csv;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `dossiers-reussite-internationale-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 });
 
-/* ---------- Démarrage ---------- */
-(async () => {
-  if (!window.claude || !window.claude.use) { notice("Cette page doit être ouverte depuis claude.ai pour accéder aux dossiers."); $("#list").innerHTML = ""; return; }
-  db = await window.claude.use("db");
-  if (!db) {
-    notice("Les dossiers ne sont pas accessibles ici. Ouvrez cette page connecté à votre compte claude.ai.");
-    $("#list").innerHTML = ""; $("#btn-new").disabled = true; return;
-  }
-  window.claude.use("downloads").then((d) => { downloads = d; $("#btn-export").hidden = !d; });
-  const timer = setTimeout(() => notice("Les dossiers mettent du temps à arriver. Vérifiez votre connexion."), 10000);
-  db.collection("dossiers").onSnapshot((snap) => {
-    if (!snap.metadata.fromCache) { clearTimeout(timer); notice(""); }
-    dossiers = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-    render();
-  }, (err) => {
-    clearTimeout(timer);
-    notice(err.code === "revoked" ? "L'accès à cette page a changé." : "Impossible de charger les dossiers pour le moment.");
+/* ---------- Connexion Supabase (sans bibliothèque) ---------- */
+const CLE_SESSION = "ri-admin-session";
+let session = null;
+try { session = JSON.parse(localStorage.getItem(CLE_SESSION) || "null"); } catch (e) {}
+function garderSession(s) {
+  session = s;
+  try { s ? localStorage.setItem(CLE_SESSION, JSON.stringify(s)) : localStorage.removeItem(CLE_SESSION); } catch (e) {}
+}
+async function rafraichir() {
+  if (!session || !session.refresh_token) throw new Error("pas de session");
+  const r = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`, {
+    method: "POST", headers: { apikey: SUPABASE_CLE, "Content-Type": "application/json" },
+    body: JSON.stringify({ refresh_token: session.refresh_token }),
   });
+  if (!r.ok) { garderSession(null); throw new Error("session expirée"); }
+  const j = await r.json();
+  garderSession({ access_token: j.access_token, refresh_token: j.refresh_token, expires_at: Math.floor(Date.now() / 1000) + j.expires_in });
+}
+async function api(method, chemin, corps) {
+  if (session && session.expires_at - 60 < Date.now() / 1000) await rafraichir();
+  const r = await fetch(SUPABASE_URL + chemin, {
+    method,
+    headers: { apikey: SUPABASE_CLE, Authorization: `Bearer ${session.access_token}`, "Content-Type": "application/json", Prefer: "return=representation" },
+    body: corps === undefined ? undefined : JSON.stringify(corps),
+  });
+  const texte = await r.text();
+  if (!r.ok) throw new Error(texte || r.status);
+  return texte ? JSON.parse(texte) : null;
+}
+async function charger() {
+  dossiers = await api("GET", "/rest/v1/dossiers?select=*&order=maj_le.desc");
+  render();
+}
+
+// Retour depuis le lien reçu par e-mail : #access_token=…&refresh_token=…
+(function lireLien() {
+  const h = new URLSearchParams(location.hash.slice(1));
+  if (h.get("access_token")) {
+    garderSession({ access_token: h.get("access_token"), refresh_token: h.get("refresh_token"), expires_at: +h.get("expires_at") || Math.floor(Date.now() / 1000) + (+h.get("expires_in") || 3600) });
+    history.replaceState(null, "", location.pathname);
+  } else if (h.get("error_description")) {
+    $("#l-err").textContent = "Le lien de connexion n'est plus valable. Demandez-en un nouveau.";
+    $("#l-err").hidden = false;
+    history.replaceState(null, "", location.pathname);
+  }
+})();
+
+$("#login-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = $("#l-email").value.trim();
+  $("#l-err").hidden = true; $("#l-ok").hidden = true;
+  if (!email) return;
+  $("#l-btn").disabled = true;
+  try {
+    const retour = location.origin + location.pathname;
+    const r = await fetch(`${SUPABASE_URL}/auth/v1/otp?redirect_to=${encodeURIComponent(retour)}`, {
+      method: "POST", headers: { apikey: SUPABASE_CLE, "Content-Type": "application/json" },
+      body: JSON.stringify({ email, create_user: false }),
+    });
+    if (r.status === 429) throw new Error("trop");
+    $("#l-ok").textContent = `Si cette adresse est autorisée, un lien de connexion vient d'être envoyé à ${email}. Ouvrez votre boîte mail (et les spams) et cliquez sur le lien.`;
+    $("#l-ok").hidden = false;
+  } catch (err) {
+    $("#l-err").textContent = err.message === "trop" ? "Trop de demandes. Attendez quelques minutes avant de redemander un lien." : "L'envoi a échoué. Vérifiez votre connexion internet.";
+    $("#l-err").hidden = false;
+  } finally { $("#l-btn").disabled = false; }
+});
+
+$("#btn-out").addEventListener("click", async () => {
+  try { await fetch(`${SUPABASE_URL}/auth/v1/logout`, { method: "POST", headers: { apikey: SUPABASE_CLE, Authorization: `Bearer ${session.access_token}` } }); } catch (e) {}
+  garderSession(null); location.reload();
+});
+
+(async function demarrer() {
+  if (!session) { $("#login").hidden = false; $("#app").hidden = true; return; }
+  try {
+    const admin = await api("POST", "/rest/v1/rpc/est_admin", {});
+    if (!admin) { garderSession(null); $("#l-err").textContent = "Ce compte n'est pas autorisé à gérer les dossiers."; $("#l-err").hidden = false; $("#login").hidden = false; return; }
+    $("#login").hidden = true; $("#app").hidden = false;
+    await charger();
+  } catch (err) {
+    garderSession(null);
+    $("#login").hidden = false; $("#app").hidden = true;
+    $("#l-err").textContent = "Votre session a expiré. Demandez un nouveau lien de connexion."; $("#l-err").hidden = false;
+  }
 })();
 </script>
+</body>
+</html>

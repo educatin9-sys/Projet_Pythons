@@ -231,7 +231,27 @@ $("#sim-results").innerHTML = `<div class="empty"><svg class="ic"><use href="#i-
 /* ---------- Espace élève ---------- */
 let codeCourant = null;
 try { codeCourant = sessionStorage.getItem("ri-code"); } catch (e) {}
-const dossierCourant = () => (codeCourant && DOSSIERS[codeCourant]) || null;
+let dossierCharge = null;
+const dossierCourant = () => (codeCourant && (DOSSIERS[codeCourant] || dossierCharge)) || null;
+
+// Lit UN dossier dans la base Supabase avec son code (fonction publique dossier_eleve)
+async function chercherDossier(code) {
+  if (DOSSIERS[code]) return DOSSIERS[code];
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/rpc/dossier_eleve`, {
+    method: "POST",
+    headers: { apikey: SUPABASE_CLE, "Content-Type": "application/json" },
+    body: JSON.stringify({ p_code: code }),
+  });
+  if (!r.ok) throw new Error("reseau");
+  const d = await r.json();
+  if (!d) return null;
+  const date = d.maj_le ? new Date(d.maj_le).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" }) : "";
+  return {
+    prenom: d.prenom, sexe: d.sexe, universite: d.universite, programme: d.programme, ville: d.ville,
+    etape: Math.max(1, d.etape || 0), termine: d.statut === "termine", maj: date, prochaine: d.prochaine,
+    paiements: Array.isArray(d.paiements) ? d.paiements : [], documents: Array.isArray(d.documents) ? d.documents : [],
+  };
+}
 
 // Avatar dessiné selon le sexe ("F" ou "M")
 function avatar(sexe) {
@@ -290,8 +310,8 @@ function afficherEspace() {
         <p>Bienvenue dans votre espace. Votre dossier est entre de bonnes mains.</p>
         <div class="esp-chips">
           <span>${esc(codeCourant)}</span>
-          <span>${esc(d.programme)}</span>
-          <span>Mis à jour le ${esc(d.maj)}</span>
+          ${d.programme ? `<span>${esc(d.programme)}</span>` : ""}
+          ${d.maj ? `<span>Mis à jour le ${esc(d.maj)}</span>` : ""}
         </div>
       </div>
       <button type="button" class="btn btn-sm esp-out" id="esp-out">Quitter mon espace</button>
@@ -306,13 +326,13 @@ function afficherEspace() {
           <p class="esp-label">Où en est mon dossier</p>
           <h2>Étape ${etape} sur ${ETAPES.length} : ${esc(ETAPES[etape - 1].titre)}</h2>
           <p class="muted">${esc(ETAPES[etape - 1].rassure)}</p>
-          <p class="esp-uni"><svg class="ic"><use href="#i-cap"/></svg> ${esc(d.universite)} · ${esc(d.ville)}</p>
+          <p class="esp-uni"><svg class="ic"><use href="#i-cap"/></svg> ${d.universite ? esc(d.universite) : "Université en cours de choix avec votre conseiller"}${d.ville ? " · " + esc(d.ville) : ""}</p>
         </div>
       </article>
 
       <article class="esp-card esp-todo">
         <p class="esp-label">À faire maintenant</p>
-        <p class="esp-todo-txt">${esc(d.prochaine)}</p>
+        <p class="esp-todo-txt">${esc(d.prochaine) || "Rien à faire pour le moment : votre conseiller avance sur votre dossier."}</p>
         <a class="btn btn-sm btn-wa" href="${waLink(`Bonjour, c'est ${d.prenom} (dossier ${codeCourant}). J'ai une question sur mon dossier.`)}" target="_blank" rel="noopener"><svg class="ic"><use href="#i-chat"/></svg> Écrire à mon conseiller</a>
       </article>
     </div>
@@ -366,14 +386,18 @@ function afficherEspace() {
   }));
 }
 
-function entrer(code) {
+async function entrer(code) {
   const err = $("#suivi-err");
-  if (!DOSSIERS[code]) {
-    err.textContent = code ? "Ce code n'existe pas. Vérifiez-le ou écrivez-nous sur WhatsApp." : "Entrez votre code de dossier.";
-    err.hidden = false;
-    return;
-  }
   err.hidden = true;
+  if (!code) { err.textContent = "Entrez votre code de dossier."; err.hidden = false; return; }
+  const btn = $("#suivi-form button[type=submit]");
+  btn.disabled = true;
+  let d = null;
+  try { d = await chercherDossier(code); }
+  catch (e) { err.textContent = "Connexion impossible pour le moment. Vérifiez votre internet et réessayez."; err.hidden = false; return; }
+  finally { btn.disabled = false; }
+  if (!d) { err.textContent = "Ce code n'existe pas. Vérifiez-le ou écrivez-nous sur WhatsApp."; err.hidden = false; return; }
+  dossierCharge = d;
   codeCourant = code;
   try { sessionStorage.setItem("ri-code", code); } catch (e) {}
   location.hash = "espace";
@@ -387,4 +411,10 @@ $$("[data-demo]").forEach((b) => b.addEventListener("click", () => {
   entrer(b.dataset.demo);
 }));
 
-afficher();
+// Au chargement : si l'élève était connecté, on relit son dossier dans la base
+(async () => {
+  if (codeCourant && !DOSSIERS[codeCourant]) {
+    try { dossierCharge = await chercherDossier(codeCourant); } catch (e) { dossierCharge = null; }
+  }
+  afficher();
+})();
