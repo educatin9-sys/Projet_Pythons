@@ -42,6 +42,7 @@ html, body { margin: 0; }
 .login-card h1 { font-size: 1.35rem; }
 .login-card p { margin: 0; color: var(--muted); }
 .login-card input { padding: .7em .8em; border: 1.5px solid var(--line); border-radius: 10px; background: var(--bg); font-size: 1rem; }
+.linkish { background: none; border: 0; padding: 0; color: var(--red); font-weight: 600; text-decoration: underline; cursor: pointer; text-align: left; font-size: .9rem; }
 .ok-msg { background: var(--green-soft); color: var(--ink); border-radius: 10px; padding: 12px 14px; }
 .doc-row { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: center; padding: 6px 10px; border-radius: 10px; background: var(--bg); border: 1.5px solid var(--line); }
 .doc-row.on { border-color: var(--green); background: var(--green-soft); }
@@ -184,15 +185,27 @@ label.f { display: grid; gap: 5px; font-weight: 600; font-size: .88rem; }
 
 
 <section class="login" id="login" hidden>
-  <form class="login-card" id="login-form">
+  <form class="login-card" id="login-form" novalidate>
     <span class="mark">RI</span>
     <h1>Espace agence</h1>
-    <p>Entrez votre adresse e-mail : vous recevrez un lien de connexion. Cliquez dessus depuis ce même appareil.</p>
-    <label class="f" for="l-email">Adresse e-mail<input id="l-email" type="email" autocomplete="email" required></label>
-    <button class="btn" type="submit" id="l-btn">Recevoir mon lien de connexion</button>
+    <p>Connectez-vous avec votre adresse e-mail et votre mot de passe.</p>
+    <label class="f" for="l-email">Adresse e-mail<input id="l-email" type="email" autocomplete="username" required></label>
+    <label class="f" for="l-pass">Mot de passe<input id="l-pass" type="password" autocomplete="current-password" required></label>
+    <button class="btn" type="submit" id="l-btn">Se connecter</button>
     <p class="err" id="l-err" hidden></p>
     <div class="ok-msg" id="l-ok" hidden></div>
+    <button type="button" class="linkish" id="l-reset">Première connexion ou mot de passe oublié ? Recevoir un lien pour le choisir</button>
     <p class="help">Seuls les comptes autorisés par l'agence peuvent se connecter.</p>
+  </form>
+  <form class="login-card" id="pw-form" hidden novalidate>
+    <span class="mark">RI</span>
+    <h1>Choisir mon mot de passe</h1>
+    <p>Au moins 8 caractères. Vous l'utiliserez à chaque connexion.</p>
+    <label class="f" for="p-1">Nouveau mot de passe<input id="p-1" type="password" autocomplete="new-password" minlength="8" required></label>
+    <label class="f" for="p-2">Retapez le mot de passe<input id="p-2" type="password" autocomplete="new-password" minlength="8" required></label>
+    <button class="btn" type="submit" id="p-btn">Enregistrer mon mot de passe</button>
+    <p class="err" id="p-err" hidden></p>
+    <button type="button" class="linkish" id="p-cancel" hidden>Annuler</button>
   </form>
 </section>
 
@@ -206,6 +219,7 @@ label.f { display: grid; gap: 5px; font-weight: 600; font-size: .88rem; }
       <a class="btn btn-ghost" href="./index.html" target="_blank" rel="noopener">Voir le site public</a>
       <button class="btn btn-ghost" id="btn-export" hidden>Exporter (Excel/CSV)</button>
       <button class="btn" id="btn-new">+ Nouvel élève</button>
+      <button class="btn btn-ghost" id="btn-pw">Mot de passe</button>
       <button class="btn btn-ghost" id="btn-out">Se déconnecter</button>
     </div>
   </header>
@@ -601,58 +615,118 @@ async function charger() {
   render();
 }
 
-// Retour depuis le lien reçu par e-mail : #access_token=…&refresh_token=…
+function voir(ecran) {
+  $("#login").hidden = ecran === "app";
+  $("#app").hidden = ecran !== "app";
+  $("#login-form").hidden = ecran !== "login";
+  $("#pw-form").hidden = ecran !== "pw";
+}
+function erreur(id, msg) { const e = $(id); e.textContent = msg; e.hidden = !msg; }
+function sessionDepuis(j) {
+  return { access_token: j.access_token, refresh_token: j.refresh_token, expires_at: Math.floor(Date.now() / 1000) + (+j.expires_in || 3600) };
+}
+
+// Retour depuis un lien reçu par e-mail (choix du mot de passe) : #access_token=…&type=recovery
+let modeMotDePasse = false;
 (function lireLien() {
   const h = new URLSearchParams(location.hash.slice(1));
   if (h.get("access_token")) {
     garderSession({ access_token: h.get("access_token"), refresh_token: h.get("refresh_token"), expires_at: +h.get("expires_at") || Math.floor(Date.now() / 1000) + (+h.get("expires_in") || 3600) });
+    modeMotDePasse = h.get("type") === "recovery" || h.get("type") === "invite";
     history.replaceState(null, "", location.pathname);
   } else if (h.get("error_description")) {
-    $("#l-err").textContent = "Le lien de connexion n'est plus valable. Demandez-en un nouveau.";
-    $("#l-err").hidden = false;
+    erreur("#l-err", "Le lien n'est plus valable. Demandez-en un nouveau.");
     history.replaceState(null, "", location.pathname);
   }
 })();
 
+// Connexion e-mail + mot de passe
 $("#login-form").addEventListener("submit", async (e) => {
   e.preventDefault();
-  const email = $("#l-email").value.trim();
-  $("#l-err").hidden = true; $("#l-ok").hidden = true;
-  if (!email) return;
+  erreur("#l-err", ""); $("#l-ok").hidden = true;
+  const email = $("#l-email").value.trim(), password = $("#l-pass").value;
+  if (!email || !password) return erreur("#l-err", "Entrez votre e-mail et votre mot de passe.");
   $("#l-btn").disabled = true;
   try {
-    const retour = location.origin + location.pathname;
-    const r = await fetch(`${SUPABASE_URL}/auth/v1/otp?redirect_to=${encodeURIComponent(retour)}`, {
+    const r = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
       method: "POST", headers: { apikey: SUPABASE_CLE, "Content-Type": "application/json" },
-      body: JSON.stringify({ email, create_user: false }),
+      body: JSON.stringify({ email, password }),
     });
-    if (r.status === 429) throw new Error("trop");
-    $("#l-ok").textContent = `Si cette adresse est autorisée, un lien de connexion vient d'être envoyé à ${email}. Ouvrez votre boîte mail (et les spams) et cliquez sur le lien.`;
-    $("#l-ok").hidden = false;
+    if (r.status === 400) return erreur("#l-err", "E-mail ou mot de passe incorrect. Première connexion ? Utilisez le lien sous le bouton pour choisir votre mot de passe.");
+    if (r.status === 429) return erreur("#l-err", "Trop d'essais. Attendez quelques minutes.");
+    if (!r.ok) throw new Error(r.status);
+    garderSession(sessionDepuis(await r.json()));
+    await demarrer();
   } catch (err) {
-    $("#l-err").textContent = err.message === "trop" ? "Trop de demandes. Attendez quelques minutes avant de redemander un lien." : "L'envoi a échoué. Vérifiez votre connexion internet.";
-    $("#l-err").hidden = false;
+    erreur("#l-err", "Connexion impossible. Vérifiez votre internet et réessayez.");
   } finally { $("#l-btn").disabled = false; }
 });
+
+// Recevoir un lien pour choisir (ou réinitialiser) le mot de passe
+$("#l-reset").addEventListener("click", async () => {
+  erreur("#l-err", ""); $("#l-ok").hidden = true;
+  const email = $("#l-email").value.trim();
+  if (!email) return erreur("#l-err", "Écrivez d'abord votre adresse e-mail ci-dessus.");
+  try {
+    const retour = location.origin + location.pathname;
+    const r = await fetch(`${SUPABASE_URL}/auth/v1/recover?redirect_to=${encodeURIComponent(retour)}`, {
+      method: "POST", headers: { apikey: SUPABASE_CLE, "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+    if (r.status === 429) return erreur("#l-err", "Trop de demandes. Attendez quelques minutes avant de redemander un lien.");
+    $("#l-ok").textContent = `Si cette adresse est autorisée, un e-mail vient d'être envoyé à ${email}. Cliquez sur le lien (regardez aussi les spams) : vous pourrez choisir votre mot de passe.`;
+    $("#l-ok").hidden = false;
+  } catch (err) { erreur("#l-err", "L'envoi a échoué. Vérifiez votre connexion internet."); }
+});
+
+// Enregistrer un nouveau mot de passe
+$("#pw-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  erreur("#p-err", "");
+  const p1 = $("#p-1").value, p2 = $("#p-2").value;
+  if (p1.length < 8) return erreur("#p-err", "Le mot de passe doit faire au moins 8 caractères.");
+  if (p1 !== p2) return erreur("#p-err", "Les deux mots de passe ne sont pas identiques.");
+  $("#p-btn").disabled = true;
+  try {
+    if (session.expires_at - 60 < Date.now() / 1000) await rafraichir();
+    const r = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+      method: "PUT", headers: { apikey: SUPABASE_CLE, Authorization: `Bearer ${session.access_token}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ password: p1 }),
+    });
+    if (!r.ok) {
+      const t = await r.text();
+      return erreur("#p-err", /weak|pwned|leaked/i.test(t) ? "Ce mot de passe est trop simple. Choisissez-en un plus long ou plus original." : "L'enregistrement a échoué. Réessayez.");
+    }
+    $("#p-1").value = $("#p-2").value = "";
+    modeMotDePasse = false;
+    toast("Mot de passe enregistré");
+    await demarrer();
+  } catch (err) { erreur("#p-err", "Votre session a expiré. Redemandez un lien depuis l'écran de connexion."); }
+  finally { $("#p-btn").disabled = false; }
+});
+$("#btn-pw").addEventListener("click", () => { $("#p-cancel").hidden = false; voir("pw"); });
+$("#p-cancel").addEventListener("click", () => voir("app"));
 
 $("#btn-out").addEventListener("click", async () => {
   try { await fetch(`${SUPABASE_URL}/auth/v1/logout`, { method: "POST", headers: { apikey: SUPABASE_CLE, Authorization: `Bearer ${session.access_token}` } }); } catch (e) {}
   garderSession(null); location.reload();
 });
 
-(async function demarrer() {
-  if (!session) { $("#login").hidden = false; $("#app").hidden = true; return; }
+async function demarrer() {
+  if (!session) return voir("login");
+  if (modeMotDePasse) { $("#p-cancel").hidden = true; return voir("pw"); }
   try {
     const admin = await api("POST", "/rest/v1/rpc/est_admin", {});
-    if (!admin) { garderSession(null); $("#l-err").textContent = "Ce compte n'est pas autorisé à gérer les dossiers."; $("#l-err").hidden = false; $("#login").hidden = false; return; }
-    $("#login").hidden = true; $("#app").hidden = false;
+    if (!admin) { garderSession(null); voir("login"); return erreur("#l-err", "Ce compte n'est pas autorisé à gérer les dossiers."); }
+    voir("app");
     await charger();
   } catch (err) {
     garderSession(null);
-    $("#login").hidden = false; $("#app").hidden = true;
-    $("#l-err").textContent = "Votre session a expiré. Demandez un nouveau lien de connexion."; $("#l-err").hidden = false;
+    voir("login");
+    erreur("#l-err", "Votre session a expiré. Reconnectez-vous.");
   }
-})();
+}
+demarrer();
 </script>
 </body>
 </html>
