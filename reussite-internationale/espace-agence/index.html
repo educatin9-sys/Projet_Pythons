@@ -1,0 +1,515 @@
+<title>Espace Réussite Internationale</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Mise en page : tableau de bord (chiffres clés, étapes cliquables, liste des dossiers) + panneau d'édition à droite */
+:root {
+  --bg: #f4f6fb; --surface: #ffffff; --surface-2: #eef1f8; --line: #e1e6f0;
+  --ink: #0f1e45; --muted: #5a6480;
+  --red: #c8102e; --red-soft: #fdebee; --on-red: #ffffff;
+  --gold: #f2b33d; --navy: #0f1e45; --on-navy: #ffffff;
+  --green: #17803d; --green-soft: #e3f4e8; --orange: #b25e00; --orange-soft: #fdf0dd; --grey-soft: #eef1f6;
+  --shadow: 0 10px 30px rgba(15, 30, 69, .10);
+  --font-title: "Sora", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0b1120; --surface: #131b2e; --surface-2: #1b2540; --line: #26314f;
+  --ink: #e8ecf7; --muted: #9aa5c4; --red: #ff4d63; --red-soft: #3a1520; --on-red: #ffffff;
+  --navy: #1e2c55; --on-navy: #ffffff;
+  --green: #4cc27a; --green-soft: #12301f; --orange: #f2b33d; --orange-soft: #3a2a0c; --grey-soft: #1b2540;
+  --shadow: 0 10px 30px rgba(0, 0, 0, .4); color-scheme: dark;
+} }
+:root[data-theme="dark"] {
+  --bg: #0b1120; --surface: #131b2e; --surface-2: #1b2540; --line: #26314f;
+  --ink: #e8ecf7; --muted: #9aa5c4; --red: #ff4d63; --red-soft: #3a1520; --on-red: #ffffff;
+  --navy: #1e2c55; --on-navy: #ffffff;
+  --green: #4cc27a; --green-soft: #12301f; --orange: #f2b33d; --orange-soft: #3a2a0c; --grey-soft: #1b2540;
+  --shadow: 0 10px 30px rgba(0, 0, 0, .4); color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.5; }
+h1, h2, h3 { font-family: var(--font-title); margin: 0; line-height: 1.2; text-wrap: balance; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.wrap { max-width: 1240px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 60px; }
+
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+.brand { display: flex; align-items: center; gap: 12px; }
+.mark { width: 44px; height: 44px; border-radius: 12px; background: var(--red); color: var(--gold); display: grid; place-items: center; font-family: var(--font-title); font-weight: 700; flex: none; }
+.brand h1 { font-size: 1.35rem; }
+.brand p { margin: 0; color: var(--muted); font-size: .9rem; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn { display: inline-flex; align-items: center; gap: 6px; border: 0; border-radius: 10px; padding: .65em 1.1em; font-weight: 700; cursor: pointer; background: var(--red); color: var(--on-red); text-decoration: none; }
+.btn:hover { filter: brightness(.95); }
+.btn-ghost { background: var(--surface); color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--line); }
+.btn-sm { padding: .45em .8em; font-size: .88rem; }
+.btn-danger { background: transparent; color: var(--red); box-shadow: inset 0 0 0 1.5px var(--red); }
+.btn-green { background: var(--green); color: #fff; }
+.btn:disabled { opacity: .5; cursor: default; }
+
+.notice { border-radius: 12px; padding: 12px 16px; margin-bottom: 16px; background: var(--orange-soft); color: var(--ink); }
+
+.kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 18px; }
+.kpi { background: var(--surface); border-radius: 14px; padding: 16px; border: 1px solid var(--line); min-width: 0; }
+.kpi small { display: block; color: var(--muted); font-weight: 600; font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; }
+.kpi b { display: block; font-family: var(--font-title); font-size: 1.45rem; margin-top: 4px; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.kpi span { color: var(--muted); font-size: .82rem; }
+.kpi.accent { background: var(--navy); border-color: var(--navy); color: var(--on-navy); }
+.kpi.accent small, .kpi.accent span { color: var(--gold); }
+
+.pipeline { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 14px; }
+.stage { flex: 1 0 120px; border: 1.5px solid var(--line); background: var(--surface); border-radius: 12px; padding: 10px 12px; text-align: left; cursor: pointer; }
+.stage b { display: block; font-family: var(--font-title); font-size: 1.3rem; font-variant-numeric: tabular-nums; }
+.stage span { font-size: .82rem; color: var(--muted); font-weight: 600; }
+.stage.active { border-color: var(--red); background: var(--red-soft); }
+
+.tools { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+.tools input, .tools select { padding: .6em .8em; border: 1.5px solid var(--line); border-radius: 10px; background: var(--surface); }
+.tools input { flex: 1 1 220px; min-width: 0; }
+
+.list { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+.row { display: grid; grid-template-columns: 1.4fr 1.3fr 1.5fr .9fr 1.6fr; gap: 14px; align-items: center; padding: 14px 18px; border-bottom: 1px solid var(--line); cursor: pointer; width: 100%; text-align: left; background: none; border-left: 0; border-right: 0; border-top: 0; }
+.row:last-child { border-bottom: 0; }
+.row:hover { background: var(--surface-2); }
+.row.head { cursor: default; background: var(--surface-2); font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); padding-block: 10px; }
+.row > div { min-width: 0; }
+.name { font-weight: 700; }
+.sub { color: var(--muted); font-size: .85rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.prog { display: grid; gap: 5px; }
+.prog-top { display: flex; justify-content: space-between; font-size: .85rem; font-weight: 600; gap: 6px; }
+.bar { height: 8px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
+.bar span { display: block; height: 100%; background: linear-gradient(90deg, var(--red), var(--gold)); border-radius: 99px; }
+.bar.green span { background: var(--green); }
+.pay { display: flex; gap: 4px; }
+.pay i { width: 22px; height: 8px; border-radius: 4px; background: var(--surface-2); }
+.pay i.on { background: var(--green); }
+.pill { display: inline-block; font-size: .75rem; font-weight: 700; padding: .2em .65em; border-radius: 99px; white-space: nowrap; }
+.p-actif { background: var(--green-soft); color: var(--green); }
+.p-pause { background: var(--orange-soft); color: var(--orange); }
+.p-abandon { background: var(--grey-soft); color: var(--muted); }
+.p-termine { background: var(--navy); color: var(--on-navy); }
+.p-prospect { background: var(--red-soft); color: var(--red); }
+.next { font-size: .88rem; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+
+.empty { text-align: center; padding: 48px 20px; color: var(--muted); }
+.empty h3 { color: var(--ink); margin-bottom: 6px; }
+
+/* Panneau d'édition */
+.overlay { position: fixed; inset: 0; background: rgba(5, 10, 25, .45); z-index: 20; }
+.drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(560px, 100%); background: var(--surface); z-index: 21; box-shadow: var(--shadow); display: flex; flex-direction: column;
+  padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); padding-right: env(safe-area-inset-right, 0px); }
+.d-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 16px 20px; border-bottom: 1px solid var(--line); }
+.d-head h2 { font-size: 1.15rem; }
+.d-body { overflow-y: auto; padding: 18px 20px; display: grid; gap: 16px; flex: 1; }
+.d-foot { display: flex; gap: 8px; justify-content: space-between; flex-wrap: wrap; padding: 14px 20px; border-top: 1px solid var(--line); }
+.x { background: none; border: 0; font-size: 1.6rem; line-height: 1; cursor: pointer; color: var(--muted); padding: 4px 8px; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+label.f { display: grid; gap: 5px; font-weight: 600; font-size: .88rem; }
+.f input, .f select, .f textarea { padding: .6em .75em; border: 1.5px solid var(--line); border-radius: 10px; background: var(--bg); width: 100%; }
+.f input:focus, .f select:focus, .f textarea:focus { outline: none; border-color: var(--red); }
+.section-t { font-family: var(--font-title); font-size: .95rem; margin-top: 4px; }
+.steps { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+.steps button { border: 1.5px solid var(--line); background: var(--bg); border-radius: 10px; padding: 8px 4px; font-size: .75rem; font-weight: 700; cursor: pointer; display: grid; gap: 2px; justify-items: center; }
+.steps button b { font-family: var(--font-title); font-size: 1rem; }
+.steps button.done { background: var(--green-soft); border-color: var(--green); color: var(--green); }
+.steps button.now { background: var(--red); border-color: var(--red); color: var(--on-red); }
+.tr { display: grid; gap: 8px; }
+.tr label { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; background: var(--bg); border: 1.5px solid var(--line); cursor: pointer; }
+.tr label.on { border-color: var(--green); background: var(--green-soft); }
+.tr input { width: 18px; height: 18px; accent-color: var(--green); }
+.tr .amt { margin-left: auto; font-weight: 700; font-variant-numeric: tabular-nums; }
+.money { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.money div { background: var(--bg); border-radius: 10px; padding: 10px 12px; }
+.money small { display: block; color: var(--muted); font-size: .75rem; font-weight: 600; text-transform: uppercase; }
+.money b { font-variant-numeric: tabular-nums; }
+.money .hl { background: var(--navy); color: var(--on-navy); }
+.money .hl small { color: var(--gold); }
+.help { color: var(--muted); font-weight: 500; font-size: .8rem; text-transform: none; letter-spacing: 0; }
+.kpi .help { display: block; margin-top: 2px; }
+.kpi.accent .help { color: rgba(255,255,255,.75); }
+.guide { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 4px 16px; margin-bottom: 16px; }
+.guide summary { cursor: pointer; font-weight: 700; padding: 10px 0; }
+.guide ol { margin: 0 0 12px; padding-left: 1.2em; display: grid; gap: 6px; color: var(--ink); }
+.hint { color: var(--muted); font-size: .85rem; margin: -6px 0 12px; }
+.pay-edit { display: grid; gap: 8px; }
+.pay-row { display: grid; grid-template-columns: auto 1fr 130px auto; gap: 8px; align-items: center; padding: 8px 10px; border-radius: 10px; background: var(--bg); border: 1.5px solid var(--line); }
+.pay-row.on { border-color: var(--green); background: var(--green-soft); }
+.pay-row input[type=text], .pay-row input[type=number] { padding: .45em .6em; border: 1.5px solid var(--line); border-radius: 8px; background: var(--surface); width: 100%; min-width: 0; }
+.pay-row input[type=checkbox] { width: 20px; height: 20px; accent-color: var(--green); }
+.pay-row .rm { background: none; border: 0; color: var(--muted); font-size: 1.2rem; cursor: pointer; padding: 2px 6px; }
+.pay-total { display: flex; justify-content: space-between; font-weight: 700; padding: 4px 2px; }
+.sexe { display: flex; gap: 8px; }
+.sexe button { flex: 1; border: 1.5px solid var(--line); background: var(--bg); border-radius: 10px; padding: .55em; font-weight: 700; cursor: pointer; }
+.sexe button.on { border-color: var(--red); background: var(--red-soft); color: var(--red); }
+.err { color: var(--red); font-weight: 600; margin: 0; }
+.toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--navy); color: var(--on-navy); padding: 10px 18px; border-radius: 10px; z-index: 30; font-weight: 600; }
+
+@media (max-width: 980px) { .kpis { grid-template-columns: repeat(2, 1fr); } .kpi.accent { grid-column: 1 / -1; } }
+@media (max-width: 760px) {
+  .pay-row { grid-template-columns: auto 1fr auto; }
+  .pay-row .amt-in { grid-column: 2 / 3; }
+  .row.head { display: none; }
+  .row { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .row .c-next { grid-column: 1 / -1; }
+  .row .c-uni { grid-column: 1 / -1; }
+  .grid2 { grid-template-columns: 1fr; }
+  .steps { grid-template-columns: repeat(3, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <span class="mark">RI</span>
+      <div><h1>Espace agence</h1><p>Réussite Internationale · gestion des élèves et des dossiers</p></div>
+    </div>
+    <div class="actions">
+      <a class="btn btn-ghost" href="https://claude.ai/artifact/SVAFTown9ae21bB4ZFnqM7" target="_blank" rel="noopener">Voir le site public</a>
+      <button class="btn btn-ghost" id="btn-export" hidden>Exporter (Excel/CSV)</button>
+      <button class="btn" id="btn-new">+ Nouvel élève</button>
+    </div>
+  </header>
+
+  <div class="notice" id="notice" hidden></div>
+
+  <details class="guide" id="guide">
+    <summary>Comment utiliser cet espace ? (cliquez pour lire)</summary>
+    <ol>
+      <li>Quand quelqu’un vous écrit sur WhatsApp, ajoutez-le avec <b>« + Nouvel élève »</b>. Il commence à l’étape <b>Prospect</b> (intéressé, mais pas encore signé).</li>
+      <li>Donnez-lui son <b>code de dossier</b> (ex. RI-2026-003) : il lui servira à suivre son dossier sur le site.</li>
+      <li>À chaque avancée, cliquez sur l’élève et changez son <b>étape</b>. Écrivez la <b>prochaine action</b> à faire.</li>
+      <li>Quand la famille paie, cochez la tranche <b>« Payée »</b>. Vous pouvez changer le montant et le nombre de tranches pour chaque élève.</li>
+      <li>En haut, les chiffres se calculent tout seuls : argent reçu, argent encore attendu, et ce qu’il vous reste après vos dépenses.</li>
+    </ol>
+  </details>
+
+  <section class="kpis" aria-label="Chiffres clés">
+    <div class="kpi"><small>Dossiers en cours</small><b id="k-actifs">–</b><span class="help">(élèves qui ont signé et dont le dossier avance)</span><span id="k-actifs-s">&nbsp;</span></div>
+    <div class="kpi"><small>Prospects</small><b id="k-prospects">–</b><span class="help">(personnes intéressées qui n’ont pas encore signé ni payé)</span></div>
+    <div class="kpi"><small>Encaissé</small><b id="k-encaisse">–</b><span class="help">(argent déjà reçu des familles, en FCFA)</span></div>
+    <div class="kpi"><small>Reste à encaisser</small><b id="k-reste">–</b><span class="help">(argent encore attendu sur les dossiers en cours, en FCFA)</span></div>
+    <div class="kpi accent"><small>Marge actuelle</small><b id="k-marge">–</b><span class="help">(ce qu’il vous reste : argent reçu moins vos dépenses)</span><span id="k-marge-s"></span></div>
+  </section>
+
+  <nav class="pipeline" id="pipeline" aria-label="Filtrer par étape"></nav>
+  <p class="hint">Cliquez sur une étape pour voir seulement les élèves qui y sont.</p>
+
+  <div class="tools">
+    <input id="q" type="search" placeholder="Rechercher un nom, un code, une université, un pays…" aria-label="Rechercher">
+    <select id="f-statut" aria-label="Filtrer par statut">
+      <option value="">Tous les statuts</option>
+      <option value="actif">Actif (le dossier avance)</option>
+      <option value="pause">En pause (on attend l’élève)</option>
+      <option value="termine">Terminé (arrivé en Chine)</option>
+      <option value="abandon">Abandonné</option>
+    </select>
+  </div>
+
+  <div class="list" id="list">
+    <div class="empty"><h3>Chargement des dossiers…</h3></div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay" hidden></div>
+<aside class="drawer" id="drawer" hidden aria-labelledby="d-title">
+  <div class="d-head"><h2 id="d-title">Dossier</h2><button class="x" id="d-close" aria-label="Fermer">×</button></div>
+  <form class="d-body" id="d-form" novalidate>
+    <div class="grid2">
+      <label class="f" for="e-prenom">Prénom *<input id="e-prenom" required></label>
+      <label class="f" for="e-nom">Nom<input id="e-nom"></label>
+      <label class="f" for="e-tel">Téléphone WhatsApp<input id="e-tel" type="tel" placeholder="+225 07 00 00 00 00"></label>
+      <label class="f" for="e-pays">Pays<input id="e-pays"></label>
+      <label class="f" for="e-niveau">Niveau
+        <select id="e-niveau"><option>Licence</option><option>Master</option><option>Doctorat</option><option>Année de langue</option></select>
+      </label>
+      <label class="f" for="e-domaine">Domaine<input id="e-domaine" placeholder="Ex. Médecine"></label>
+    </div>
+    <div class="f"><span>Sexe <span class="help">(pour l’avatar dans son espace sur le site)</span></span>
+      <div class="sexe" id="e-sexe"><button type="button" data-v="F">Fille</button><button type="button" data-v="M">Garçon</button></div>
+    </div>
+    <label class="f" for="e-uni">Université visée<input id="e-uni" placeholder="Ex. NUAA — Ingénierie aérospatiale"></label>
+
+    <div class="section-t">Étape du dossier <span class="help">(cliquez sur l’étape où il en est)</span></div>
+    <div class="steps" id="e-steps"></div>
+
+    <div class="grid2">
+      <label class="f" for="e-statut">Statut
+        <select id="e-statut"><option value="actif">Actif (le dossier avance)</option><option value="pause">En pause (on attend l’élève)</option><option value="termine">Terminé (arrivé en Chine)</option><option value="abandon">Abandonné</option></select>
+      </label>
+      <label class="f" for="e-code">Code de dossier <span class="help">(à donner à l’élève)</span><input id="e-code"></label>
+    </div>
+
+    <div class="section-t">Paiements de l’élève <span class="help">(modifiez les montants, ajoutez ou retirez des tranches, cochez la case quand c’est payé)</span></div>
+    <div class="pay-edit" id="e-pay"></div>
+    <button type="button" class="btn btn-ghost btn-sm" id="e-pay-add" style="justify-self:start">+ Ajouter une tranche</button>
+
+    <label class="f" for="e-charges">Dépenses pour ce dossier (FCFA) <span class="help">(frais de dossier, traductions, envois… ce que vous avez payé de votre poche)</span><input id="e-charges" type="number" min="0" step="1000" inputmode="numeric"></label>
+    <div class="money" id="e-money"></div>
+
+    <label class="f" for="e-next">Prochaine action <span class="help">(ce qu’il faut faire maintenant)</span><input id="e-next" placeholder="Ex. Relancer pour la traduction du relevé de notes"></label>
+    <label class="f" for="e-notes">Notes internes <span class="help">(pour vous seulement)</span><textarea id="e-notes" rows="4" placeholder="Pas de numéro de passeport ni de données bancaires ici."></textarea></label>
+    <p class="err" id="e-err" hidden></p>
+  </form>
+  <div class="d-foot">
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-danger btn-sm" id="d-delete" type="button">Supprimer</button>
+      <a class="btn btn-green btn-sm" id="d-wa" target="_blank" rel="noopener" hidden>WhatsApp</a>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-ghost" id="d-cancel" type="button">Annuler</button>
+      <button class="btn" id="d-save" type="button">Enregistrer</button>
+    </div>
+  </div>
+</aside>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const CHARGES_DEFAUT = 200000;
+const ETAPES = ["Prospect", "Diagnostic", "Vœux", "Dossier", "Admission & visa", "Accueil Chine"];
+const STATUTS = { actif: "Actif", pause: "En pause", termine: "Terminé", abandon: "Abandonné" };
+
+const $ = (s) => document.querySelector(s);
+const fmt = (n) => new Intl.NumberFormat("fr-FR").format(Math.round(n || 0));
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const PAIEMENTS_DEFAUT = () => [
+  { libelle: "À la signature", montant: 500000, payee: false },
+  { libelle: "À l'admission + JW202", montant: 700000, payee: false },
+  { libelle: "Au visa X1, avant le vol", montant: 300000, payee: false },
+];
+// Les anciens dossiers avaient 3 tranches fixes (tranches: [true, false, ...]) : on les convertit.
+const paiements = (d) => Array.isArray(d.paiements) ? d.paiements :
+  PAIEMENTS_DEFAUT().map((p, i) => ({ ...p, payee: !!(d.tranches && d.tranches[i]) }));
+const prix = (d) => paiements(d).reduce((s, p) => s + (+p.montant || 0), 0);
+const encaisse = (d) => paiements(d).reduce((s, p) => s + (p.payee ? +p.montant || 0 : 0), 0);
+const nbTranches = (d) => paiements(d).filter((p) => p.payee).length;
+const charges = (d) => (typeof d.charges === "number" ? d.charges : CHARGES_DEFAUT);
+const avancement = (d) => d.statut === "termine" ? 100 : Math.round(((d.etape || 0) / 5) * 100);
+
+let db = null, dossiers = [], filtreEtape = null, enEdition = null, brouillon = null, confirmDelete = false;
+
+function toast(msg) {
+  const t = $("#toast"); t.textContent = msg; t.hidden = false;
+  clearTimeout(toast.t); toast.t = setTimeout(() => (t.hidden = true), 2200);
+}
+function notice(msg) { const n = $("#notice"); n.textContent = msg; n.hidden = !msg; }
+
+/* ---------- Rendu ---------- */
+function render() {
+  const actifs = dossiers.filter((d) => d.statut !== "abandon" && d.statut !== "termine" && (d.etape || 0) > 0);
+  const prospects = dossiers.filter((d) => (d.etape || 0) === 0 && d.statut !== "abandon");
+  const totalEnc = dossiers.reduce((s, d) => s + encaisse(d), 0);
+  const totalCh = dossiers.filter((d) => (d.etape || 0) > 0).reduce((s, d) => s + charges(d), 0);
+  const reste = actifs.reduce((s, d) => s + Math.max(0, prix(d) - encaisse(d)), 0);
+  $("#k-actifs").textContent = actifs.length;
+  $("#k-actifs-s").textContent = `${dossiers.filter((d) => d.statut === "termine").length} terminé(s)`;
+  $("#k-prospects").textContent = prospects.length;
+  $("#k-encaisse").textContent = fmt(totalEnc);
+  $("#k-reste").textContent = fmt(reste);
+  $("#k-marge").textContent = fmt(totalEnc - totalCh) + " FCFA";
+  $("#k-marge-s").textContent = `dépenses : ${fmt(totalCh)} FCFA`;
+
+  const counts = ETAPES.map((_, i) => dossiers.filter((d) => (d.etape || 0) === i && d.statut !== "abandon").length);
+  $("#pipeline").innerHTML =
+    `<button class="stage ${filtreEtape === null ? "active" : ""}" data-etape=""><b>${dossiers.length}</b><span>Tous</span></button>` +
+    ETAPES.map((e, i) => `<button class="stage ${filtreEtape === i ? "active" : ""}" data-etape="${i}"><b>${counts[i]}</b><span>${i ? i + ". " : ""}${e}</span></button>`).join("");
+
+  const q = $("#q").value.trim().toLowerCase();
+  const st = $("#f-statut").value;
+  const vis = dossiers
+    .filter((d) => filtreEtape === null || (d.etape || 0) === filtreEtape)
+    .filter((d) => !st || d.statut === st)
+    .filter((d) => !q || [d.prenom, d.nom, d.code, d.universite, d.pays, d.domaine, d.telephone].join(" ").toLowerCase().includes(q))
+    .sort((a, b) => String(b.majLe || "").localeCompare(String(a.majLe || "")));
+
+  const list = $("#list");
+  if (!dossiers.length) {
+    list.innerHTML = `<div class="empty"><h3>Aucun élève pour l'instant</h3><p>Ajoutez votre premier élève avec « + Nouvel élève ». Chaque inscription reçue sur WhatsApp peut être ajoutée ici comme prospect.</p></div>`;
+    return;
+  }
+  if (!vis.length) { list.innerHTML = `<div class="empty"><h3>Aucun dossier ne correspond</h3><p>Changez la recherche ou le filtre.</p></div>`; return; }
+
+  list.innerHTML = `<div class="row head"><div>Élève</div><div>Étape</div><div class="c-uni">Université</div><div>Payé / prix</div><div class="c-next">Prochaine action</div></div>` +
+    vis.map((d) => {
+      const pct = avancement(d);
+      const pill = (d.etape || 0) === 0 && d.statut === "actif" ? `<span class="pill p-prospect">Prospect</span>` : `<span class="pill p-${d.statut}">${STATUTS[d.statut] || ""}</span>`;
+      return `<button class="row" data-id="${esc(d.id)}">
+        <div><div class="name">${esc(d.prenom)} ${esc(d.nom)}</div><div class="sub">${esc(d.code)}${d.pays ? " · " + esc(d.pays) : ""}</div></div>
+        <div class="prog"><div class="prog-top"><span>${(d.etape || 0) ? d.etape + ". " : ""}${ETAPES[d.etape || 0]}</span><span>${pct} %</span></div><div class="bar"><span style="width:${pct}%"></span></div></div>
+        <div class="c-uni"><div class="sub" style="color:var(--ink)">${esc(d.universite) || "—"}</div><div class="sub">${esc(d.niveau || "")}${d.domaine ? " · " + esc(d.domaine) : ""}</div></div>
+        <div><div class="pay">${paiements(d).map((p) => `<i class="${p.payee ? "on" : ""}"></i>`).join("")}</div><div class="sub">${fmt(encaisse(d))} / ${fmt(prix(d))}</div></div>
+        <div class="c-next">${pill}<div class="next">${esc(d.prochaine) || '<span class="sub">—</span>'}</div></div>
+      </button>`;
+    }).join("");
+}
+
+$("#pipeline").addEventListener("click", (e) => {
+  const b = e.target.closest(".stage"); if (!b) return;
+  filtreEtape = b.dataset.etape === "" ? null : +b.dataset.etape; render();
+});
+$("#q").addEventListener("input", render);
+$("#f-statut").addEventListener("change", render);
+$("#list").addEventListener("click", (e) => {
+  const r = e.target.closest(".row[data-id]"); if (!r) return;
+  ouvrir(dossiers.find((d) => d.id === r.dataset.id));
+});
+
+/* ---------- Édition ---------- */
+function prochainCode() {
+  const an = new Date().getFullYear();
+  const nums = dossiers.map((d) => (String(d.code || "").match(new RegExp(`^RI-${an}-(\\d+)$`)) || [])[1]).filter(Boolean).map(Number);
+  return `RI-${an}-${String((nums.length ? Math.max(...nums) : 0) + 1).padStart(3, "0")}`;
+}
+
+function ouvrir(d) {
+  enEdition = d ? d.id : null;
+  brouillon = d ? { ...d, paiements: paiements(d).map((p) => ({ ...p })) } :
+    { prenom: "", nom: "", sexe: "", telephone: "", pays: "", niveau: "Licence", domaine: "", universite: "", etape: 0, statut: "actif", code: prochainCode(), paiements: PAIEMENTS_DEFAUT(), charges: CHARGES_DEFAUT, prochaine: "", notes: "" };
+  $("#d-title").textContent = d ? `${d.prenom} ${d.nom}`.trim() : "Nouvel élève";
+  const set = (id, v) => ($(id).value = v ?? "");
+  set("#e-prenom", brouillon.prenom); set("#e-nom", brouillon.nom); set("#e-tel", brouillon.telephone); set("#e-pays", brouillon.pays);
+  set("#e-niveau", brouillon.niveau || "Licence"); set("#e-domaine", brouillon.domaine); set("#e-uni", brouillon.universite);
+  set("#e-statut", brouillon.statut || "actif"); set("#e-code", brouillon.code); set("#e-charges", charges(brouillon));
+  set("#e-next", brouillon.prochaine); set("#e-notes", brouillon.notes);
+  $("#e-err").hidden = true;
+  confirmDelete = false; $("#d-delete").textContent = "Supprimer"; $("#d-delete").hidden = !d;
+  majEtapes(); majSexe(); majPaiements(); majArgent(); majWa();
+  $("#overlay").hidden = false; $("#drawer").hidden = false;
+  $("#e-prenom").focus();
+}
+function fermer() { $("#overlay").hidden = true; $("#drawer").hidden = true; enEdition = null; brouillon = null; }
+
+function majEtapes() {
+  $("#e-steps").innerHTML = ETAPES.map((e, i) => {
+    const cls = i < brouillon.etape ? "done" : i === brouillon.etape ? "now" : "";
+    return `<button type="button" class="${cls}" data-i="${i}"><b>${i ? i : "•"}</b>${e}</button>`;
+  }).join("");
+}
+function majSexe() {
+  document.querySelectorAll("#e-sexe button").forEach((b) => b.classList.toggle("on", b.dataset.v === brouillon.sexe));
+}
+function majPaiements() {
+  $("#e-pay").innerHTML = brouillon.paiements.map((p, i) => `
+    <div class="pay-row ${p.payee ? "on" : ""}">
+      <input type="checkbox" id="e-p${i}" data-i="${i}" data-k="payee" ${p.payee ? "checked" : ""} title="Cochez quand c'est payé" aria-label="Tranche ${i + 1} payée">
+      <input type="text" id="e-pl${i}" data-i="${i}" data-k="libelle" value="${esc(p.libelle)}" placeholder="Ex. À la signature" aria-label="Nom de la tranche ${i + 1}">
+      <input type="number" class="amt-in" id="e-pm${i}" data-i="${i}" data-k="montant" value="${+p.montant || 0}" min="0" step="1000" inputmode="numeric" aria-label="Montant de la tranche ${i + 1} en FCFA">
+      <button type="button" class="rm" data-rm="${i}" aria-label="Retirer la tranche ${i + 1}">×</button>
+    </div>`).join("") +
+    `<div class="pay-total"><span>Prix total pour cet élève</span><span>${fmt(prix(brouillon))} FCFA</span></div>`;
+}
+function majArgent() {
+  const enc = encaisse(brouillon), ch = charges(brouillon);
+  $("#e-money").innerHTML = `
+    <div><small>Encaissé</small><b>${fmt(enc)} FCFA</b></div>
+    <div><small>Reste à encaisser</small><b>${fmt(Math.max(0, prix(brouillon) - enc))} FCFA</b></div>
+    <div class="hl"><small>Marge actuelle <span class="help" style="color:inherit">(reçu − dépenses)</span></small><b>${fmt(enc - ch)} FCFA</b></div>
+    <div><small>Marge à la fin <span class="help">(si tout est payé)</span></small><b>${fmt(prix(brouillon) - ch)} FCFA${prix(brouillon) ? ` (${Math.round(((prix(brouillon) - ch) / prix(brouillon)) * 100)} %)` : ""}</b></div>`;
+}
+function majWa() {
+  const num = ($("#e-tel").value || "").replace(/[^\d]/g, "");
+  const a = $("#d-wa"); a.hidden = num.length < 8; a.href = `https://wa.me/${num}`;
+}
+
+$("#e-steps").addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-i]"); if (!b) return;
+  brouillon.etape = +b.dataset.i; majEtapes();
+});
+$("#e-sexe").addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-v]"); if (!b) return; brouillon.sexe = b.dataset.v; majSexe();
+});
+$("#e-pay").addEventListener("input", (e) => {
+  const t = e.target, i = +t.dataset.i, k = t.dataset.k; if (!k) return;
+  const p = brouillon.paiements[i];
+  if (k === "payee") { p.payee = t.checked; t.closest(".pay-row").classList.toggle("on", t.checked); }
+  else if (k === "montant") p.montant = Math.max(0, +t.value || 0);
+  else p.libelle = t.value;
+  $("#e-pay .pay-total span:last-child").textContent = fmt(prix(brouillon)) + " FCFA";
+  majArgent();
+});
+$("#e-pay").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-rm]"); if (!b) return;
+  brouillon.paiements.splice(+b.dataset.rm, 1); majPaiements(); majArgent();
+});
+$("#e-pay-add").addEventListener("click", () => {
+  brouillon.paiements.push({ libelle: `Tranche ${brouillon.paiements.length + 1}`, montant: 0, payee: false });
+  majPaiements(); majArgent();
+});
+$("#e-charges").addEventListener("input", () => { brouillon.charges = Math.max(0, +$("#e-charges").value || 0); majArgent(); });
+$("#e-tel").addEventListener("input", majWa);
+
+async function enregistrer() {
+  if (!db) return;
+  const prenom = $("#e-prenom").value.trim();
+  if (!prenom) { $("#e-err").textContent = "Le prénom est obligatoire."; $("#e-err").hidden = false; return; }
+  const data = {
+    prenom, nom: $("#e-nom").value.trim(), telephone: $("#e-tel").value.trim(), pays: $("#e-pays").value.trim(),
+    niveau: $("#e-niveau").value, domaine: $("#e-domaine").value.trim(), universite: $("#e-uni").value.trim(),
+    etape: brouillon.etape, statut: $("#e-statut").value, code: $("#e-code").value.trim() || prochainCode(),
+    sexe: brouillon.sexe || "", paiements: brouillon.paiements.map((p) => ({ libelle: String(p.libelle || "").trim(), montant: +p.montant || 0, payee: !!p.payee })), charges: Math.max(0, +$("#e-charges").value || 0),
+    prochaine: $("#e-next").value.trim(), notes: $("#e-notes").value.trim(),
+    creeLe: brouillon.creeLe || new Date().toISOString(), majLe: new Date().toISOString(),
+  };
+  const btn = $("#d-save"); btn.disabled = true;
+  try {
+    const ref = enEdition ? db.collection("dossiers").doc(enEdition) : db.collection("dossiers").doc();
+    await ref.set(data);
+    fermer(); toast("Dossier enregistré");
+  } catch (err) {
+    $("#e-err").textContent = err && err.code === "quota_exceeded" ? "La base est pleine : supprimez d'anciens dossiers." : "L'enregistrement a échoué. Vérifiez votre connexion et réessayez.";
+    $("#e-err").hidden = false;
+  } finally { btn.disabled = false; }
+}
+async function supprimer() {
+  if (!enEdition || !db) return;
+  if (!confirmDelete) { confirmDelete = true; $("#d-delete").textContent = "Confirmer la suppression"; return; }
+  try { await db.collection("dossiers").doc(enEdition).delete(); fermer(); toast("Dossier supprimé"); }
+  catch { $("#e-err").textContent = "La suppression a échoué. Réessayez."; $("#e-err").hidden = false; }
+}
+
+$("#btn-new").addEventListener("click", () => ouvrir(null));
+$("#d-close").addEventListener("click", fermer);
+$("#d-cancel").addEventListener("click", fermer);
+$("#overlay").addEventListener("click", fermer);
+$("#d-save").addEventListener("click", enregistrer);
+$("#d-delete").addEventListener("click", supprimer);
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("#drawer").hidden) fermer(); });
+
+/* ---------- Export CSV ---------- */
+let downloads = null;
+$("#btn-export").addEventListener("click", async () => {
+  if (!downloads) return;
+  const cols = ["code", "prenom", "nom", "telephone", "pays", "niveau", "domaine", "universite", "etape", "statut", "prix", "tranchesPayees", "encaisse", "charges", "prochaine", "notes", "majLe"];
+  const lignes = dossiers.map((d) => cols.map((c) => {
+    const v = c === "etape" ? ETAPES[d.etape || 0] : c === "statut" ? STATUTS[d.statut] : c === "tranchesPayees" ? nbTranches(d) : c === "prix" ? prix(d) : c === "encaisse" ? encaisse(d) : c === "charges" ? charges(d) : d[c];
+    return `"${String(v ?? "").replace(/"/g, '""')}"`;
+  }).join(";"));
+  const csv = "﻿" + cols.join(";") + "\n" + lignes.join("\n");
+  try { await downloads.save({ filename: `dossiers-reussite-internationale-${new Date().toISOString().slice(0, 10)}.csv`, data: csv }); }
+  catch { toast("Export annulé"); }
+});
+
+/* ---------- Démarrage ---------- */
+(async () => {
+  if (!window.claude || !window.claude.use) { notice("Cette page doit être ouverte depuis claude.ai pour accéder aux dossiers."); $("#list").innerHTML = ""; return; }
+  db = await window.claude.use("db");
+  if (!db) {
+    notice("Les dossiers ne sont pas accessibles ici. Ouvrez cette page connecté à votre compte claude.ai.");
+    $("#list").innerHTML = ""; $("#btn-new").disabled = true; return;
+  }
+  window.claude.use("downloads").then((d) => { downloads = d; $("#btn-export").hidden = !d; });
+  const timer = setTimeout(() => notice("Les dossiers mettent du temps à arriver. Vérifiez votre connexion."), 10000);
+  db.collection("dossiers").onSnapshot((snap) => {
+    if (!snap.metadata.fromCache) { clearTimeout(timer); notice(""); }
+    dossiers = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    render();
+  }, (err) => {
+    clearTimeout(timer);
+    notice(err.code === "revoked" ? "L'accès à cette page a changé." : "Impossible de charger les dossiers pour le moment.");
+  });
+})();
+</script>

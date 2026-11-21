@@ -19,8 +19,11 @@ function afficher() {
     const parent = ancre && ancre.closest("[data-view]");
     vue = parent ? parent.dataset.view : "accueil";
   }
+  if (vue === "espace" && !dossierCourant()) { location.replace("#suivi"); return; }
+  if (vue === "espace") afficherEspace();
   $$("[data-view]").forEach((v) => (v.hidden = v.dataset.view !== vue));
-  $$("[data-link]").forEach((a) => a.classList.toggle("active", a.getAttribute("href") === "#" + vue));
+  const actif = vue === "espace" ? "suivi" : vue;
+  $$("[data-link]").forEach((a) => a.classList.toggle("active", a.getAttribute("href") === "#" + actif));
   if (ancre) ancre.scrollIntoView({ behavior: "smooth" });
   else window.scrollTo(0, 0);
 }
@@ -38,6 +41,7 @@ $("#foot-wa").textContent = numeroAffiche;
 $("#foot-mail").textContent = EMAIL_CONTACT;
 $("#wa-float").href = waLink("Bonjour Réussite Internationale, je souhaite étudier en Chine.");
 $("#annee").textContent = new Date().getFullYear();
+$("#lien-agence").href = LIEN_ESPACE_AGENCE;
 
 /* ---------- Simulateur ---------- */
 const choix = { niveau: "Licence", domaine: "Tous", anglais: "2" };
@@ -198,62 +202,163 @@ $("#sim-results").addEventListener("click", (e) => {
   location.hash = "inscription";
 });
 
-/* ---------- Suivi de dossier ---------- */
-function afficherDossier(code) {
-  const zone = $("#suivi-result");
-  const d = DOSSIERS[code];
-  if (!d) {
-    zone.innerHTML = `<div class="alert"><b>Code introuvable.</b> Vérifiez le code reçu à la signature, ou écrivez-nous sur WhatsApp.</div>`;
-    return;
+/* ---------- Espace élève ---------- */
+let codeCourant = null;
+try { codeCourant = sessionStorage.getItem("ri-code"); } catch (e) {}
+const dossierCourant = () => (codeCourant && DOSSIERS[codeCourant]) || null;
+
+// Avatar dessiné selon le sexe ("F" ou "M")
+function avatar(sexe) {
+  const peau = "#8a5a3b", cheveux = "#24160f";
+  if (sexe === "F") {
+    return `<svg viewBox="0 0 120 120" class="avatar-svg" role="img" aria-label="Avatar"><circle cx="60" cy="60" r="60" fill="#fde2e4"/>
+      <path d="M30 64c0-24 13-38 30-38s30 14 30 38v30H30z" fill="${cheveux}"/>
+      <rect x="52" y="78" width="16" height="16" rx="6" fill="${peau}"/>
+      <path d="M20 120c4-19 20-29 40-29s36 10 40 29z" fill="#c8102e"/>
+      <path d="M46 92h28l-14 12z" fill="#ffffff" opacity=".9"/>
+      <ellipse cx="60" cy="60" rx="20" ry="23" fill="${peau}"/>
+      <path d="M39 58c1-15 10-24 21-24s20 9 21 24c-7-7-15-11-21-11s-14 4-21 11z" fill="${cheveux}"/>
+      <circle cx="60" cy="27" r="10" fill="${cheveux}"/>
+      <circle cx="52" cy="62" r="2.4" fill="${cheveux}"/><circle cx="68" cy="62" r="2.4" fill="${cheveux}"/>
+      <path d="M53 71q7 6 14 0" fill="none" stroke="#4a2414" stroke-width="2.4" stroke-linecap="round"/>
+      <circle cx="40" cy="69" r="2.6" fill="#f2b33d"/><circle cx="80" cy="69" r="2.6" fill="#f2b33d"/>
+    </svg>`;
   }
-  const pct = d.etape >= 5 ? 100 : Math.round(((d.etape - 0.5) / ETAPES.length) * 100);
-  const paye = PACK.tranches.slice(0, d.tranchesPayees).reduce((s, t) => s + t.montant, 0);
-  const pctPaye = Math.round((paye / PACK.total) * 100);
-
-  zone.innerHTML = `
-  <div class="dossier">
-    <div class="panel dossier-head">
-      <div><h2>Bonjour ${esc(d.prenom)}</h2><p class="muted" style="margin:0">${esc(d.universite)}</p></div>
-      <span class="badge b-info">Mis à jour le ${esc(d.maj)}</span>
-    </div>
-
-    <div class="panel bar-block">
-      <div class="bar-label"><span>Avancement du dossier</span><span>${pct} %</span></div>
-      <div class="bar"><span style="width:0" data-w="${pct}"></span></div>
-      <p class="muted" style="margin:0">Étape ${d.etape} sur ${ETAPES.length} : <b>${esc(ETAPES[d.etape - 1].titre)}</b></p>
-    </div>
-
-    <div class="next"><b>Prochaine action :</b> ${esc(d.prochaine)}</div>
-
-    <div class="panel">
-      <ol class="stepper">
-        ${ETAPES.map((e, i) => {
-          const n = i + 1;
-          const cls = n < d.etape || (d.etape >= 5 && pct === 100) ? "done" : n === d.etape ? "now" : "";
-          return `<li class="${cls}"><span class="dot">${cls === "done" ? "✓" : n}</span><div><h4>${e.titre}</h4><p>${e.texte}</p></div></li>`;
-        }).join("")}
-      </ol>
-    </div>
-
-    <div class="panel bar-block">
-      <div class="bar-label"><span>Paiement du pack</span><span>${pctPaye} %</span></div>
-      <div class="bar green"><span style="width:0" data-w="${pctPaye}"></span></div>
-      <ul class="pay-list">
-        ${PACK.tranches.map((t, i) => `<li><span>Tranche ${i + 1} · ${t.quand}</span><span><b>${fcfa(t.montant)} FCFA</b> · ${i < d.tranchesPayees ? '<span class="badge b-good">Payée</span>' : '<span class="badge b-grey">À venir</span>'}</span></li>`).join("")}
-      </ul>
-    </div>
-    <p class="demo-note">Ceci est un dossier de démonstration.</p>
-  </div>`;
-  requestAnimationFrame(() => requestAnimationFrame(() => $$("[data-w]", zone).forEach((b) => (b.style.width = b.dataset.w + "%"))));
+  return `<svg viewBox="0 0 120 120" class="avatar-svg" role="img" aria-label="Avatar"><circle cx="60" cy="60" r="60" fill="#e3ecfb"/>
+    <rect x="52" y="78" width="16" height="16" rx="6" fill="${peau}"/>
+    <path d="M20 120c4-19 20-29 40-29s36 10 40 29z" fill="#0f1e45"/>
+    <path d="M50 91l10 12 10-12" fill="none" stroke="#ffffff" stroke-width="3" stroke-linejoin="round"/>
+    <ellipse cx="39.5" cy="62" rx="3.5" ry="5" fill="${peau}"/><ellipse cx="80.5" cy="62" rx="3.5" ry="5" fill="${peau}"/>
+    <ellipse cx="60" cy="60" rx="20" ry="23" fill="${peau}"/>
+    <path d="M39 56c0-16 9-25 21-25s21 9 21 25c-5-6-11-9-21-9s-16 3-21 9z" fill="${cheveux}"/>
+    <circle cx="52" cy="62" r="2.4" fill="${cheveux}"/><circle cx="68" cy="62" r="2.4" fill="${cheveux}"/>
+    <path d="M53 71q7 6 14 0" fill="none" stroke="#4a2414" stroke-width="2.4" stroke-linecap="round"/>
+  </svg>`;
 }
 
+function anneau(pct) {
+  const r = 52, c = 2 * Math.PI * r;
+  return `<svg viewBox="0 0 120 120" class="ring" aria-hidden="true">
+    <circle cx="60" cy="60" r="${r}" class="ring-bg"/>
+    <circle cx="60" cy="60" r="${r}" class="ring-fg" stroke-dasharray="${c}" stroke-dashoffset="${c}" data-off="${c * (1 - pct / 100)}"/>
+  </svg>`;
+}
+
+function afficherEspace() {
+  const d = dossierCourant();
+  if (!d) return;
+  const etape = d.etape || 1;
+  const pct = d.termine ? 100 : Math.round(((etape - 0.5) / ETAPES.length) * 100);
+  const total = d.paiements.reduce((s, p) => s + p.montant, 0);
+  const paye = d.paiements.reduce((s, p) => s + (p.payee ? p.montant : 0), 0);
+  const pctPaye = total ? Math.round((paye / total) * 100) : 0;
+  const docsOk = d.documents.filter((x) => x.ok).length;
+
+  $("#espace").innerHTML = `
+  <div class="esp-banner">
+    <div class="wrap esp-banner-inner">
+      <div class="esp-avatar">${avatar(d.sexe)}</div>
+      <div class="esp-hello">
+        <p class="esp-kicker"><svg class="ic"><use href="#i-lock"/></svg> Espace personnel</p>
+        <h1>Bonjour ${esc(d.prenom)}</h1>
+        <p>Bienvenue dans votre espace. Votre dossier est entre de bonnes mains.</p>
+        <div class="esp-chips">
+          <span>${esc(codeCourant)}</span>
+          <span>${esc(d.programme)}</span>
+          <span>Mis à jour le ${esc(d.maj)}</span>
+        </div>
+      </div>
+      <button type="button" class="btn btn-sm esp-out" id="esp-out">Quitter mon espace</button>
+    </div>
+  </div>
+
+  <div class="wrap esp">
+    <div class="esp-grid">
+      <article class="esp-card esp-progress">
+        <div class="ring-wrap">${anneau(pct)}<div class="ring-txt"><b>${pct} %</b><span>${d.termine ? "terminé" : "avancé"}</span></div></div>
+        <div>
+          <p class="esp-label">Où en est mon dossier</p>
+          <h2>Étape ${etape} sur ${ETAPES.length} : ${esc(ETAPES[etape - 1].titre)}</h2>
+          <p class="muted">${esc(ETAPES[etape - 1].rassure)}</p>
+          <p class="esp-uni"><svg class="ic"><use href="#i-cap"/></svg> ${esc(d.universite)} · ${esc(d.ville)}</p>
+        </div>
+      </article>
+
+      <article class="esp-card esp-todo">
+        <p class="esp-label">À faire maintenant</p>
+        <p class="esp-todo-txt">${esc(d.prochaine)}</p>
+        <a class="btn btn-sm btn-wa" href="${waLink(`Bonjour, c'est ${d.prenom} (dossier ${codeCourant}). J'ai une question sur mon dossier.`)}" target="_blank" rel="noopener"><svg class="ic"><use href="#i-chat"/></svg> Écrire à mon conseiller</a>
+      </article>
+    </div>
+
+    <article class="esp-card">
+      <p class="esp-label">Mon parcours</p>
+      <ol class="esp-steps">
+        ${ETAPES.map((e, i) => {
+          const n = i + 1;
+          const cls = n < etape || d.termine ? "done" : n === etape ? "now" : "";
+          return `<li class="${cls}"><span class="dot">${cls === "done" ? '<svg class="ic"><use href="#i-check"/></svg>' : n}</span><div><h3>${e.titre}</h3><p>${e.texte}</p></div></li>`;
+        }).join("")}
+      </ol>
+    </article>
+
+    <div class="esp-grid esp-grid-2">
+      <article class="esp-card">
+        <div class="esp-card-head"><p class="esp-label">Mes documents</p><span class="badge b-info">${docsOk} / ${d.documents.length} reçus</span></div>
+        <ul class="esp-docs">
+          ${d.documents.map((x) => `<li class="${x.ok ? "ok" : ""}"><span class="tick">${x.ok ? '<svg class="ic"><use href="#i-check"/></svg>' : ""}</span><span class="doc-name">${esc(x.nom)}</span><span class="state">${x.ok ? "Reçu" : "À fournir"}</span></li>`).join("")}
+        </ul>
+      </article>
+
+      <article class="esp-card">
+        <div class="esp-card-head"><p class="esp-label">Mes paiements</p><span class="badge b-good">${pctPaye} % réglé</span></div>
+        <div class="bar green"><span style="width:0" data-w="${pctPaye}"></span></div>
+        <ul class="esp-pay">
+          ${d.paiements.map((x) => `<li><span>${esc(x.libelle)}</span><span><b>${fcfa(x.montant)} FCFA</b> ${x.payee ? '<span class="badge b-good">Payé</span>' : '<span class="badge b-grey">À venir</span>'}</span></li>`).join("")}
+        </ul>
+        <div class="esp-pay-total"><span>Déjà réglé</span><b>${fcfa(paye)} / ${fcfa(total)} FCFA</b></div>
+        <p class="muted small">La scolarité et le dortoir se paient directement à l'université.</p>
+      </article>
+    </div>
+
+    <ul class="trust trust-soft">
+      <li><svg class="ic"><use href="#i-shield"/></svg>Votre contrat vous protège</li>
+      <li><svg class="ic"><use href="#i-user"/></svg>Un conseiller suit votre dossier</li>
+      <li><svg class="ic"><use href="#i-lock"/></svg>Espace réservé à vous</li>
+    </ul>
+    ${codeCourant.startsWith("RI-DEMO") ? '<p class="demo-note">Ceci est un dossier de démonstration.</p>' : ""}
+  </div>`;
+
+  $("#esp-out").addEventListener("click", () => {
+    codeCourant = null;
+    try { sessionStorage.clear(); } catch (e) {}
+    location.hash = "suivi";
+  });
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    $$("#espace [data-w]").forEach((b) => (b.style.width = b.dataset.w + "%"));
+    $$("#espace [data-off]").forEach((c) => (c.style.strokeDashoffset = c.dataset.off));
+  }));
+}
+
+function entrer(code) {
+  const err = $("#suivi-err");
+  if (!DOSSIERS[code]) {
+    err.textContent = code ? "Ce code n'existe pas. Vérifiez-le ou écrivez-nous sur WhatsApp." : "Entrez votre code de dossier.";
+    err.hidden = false;
+    return;
+  }
+  err.hidden = true;
+  codeCourant = code;
+  try { sessionStorage.setItem("ri-code", code); } catch (e) {}
+  location.hash = "espace";
+}
 $("#suivi-form").addEventListener("submit", (e) => {
   e.preventDefault();
-  afficherDossier($("#suivi-code").value.trim().toUpperCase());
+  entrer($("#suivi-code").value.trim().toUpperCase());
 });
 $$("[data-demo]").forEach((b) => b.addEventListener("click", () => {
   $("#suivi-code").value = b.dataset.demo;
-  afficherDossier(b.dataset.demo);
+  entrer(b.dataset.demo);
 }));
 
 /* ---------- Inscription → WhatsApp ---------- */

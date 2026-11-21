@@ -25,6 +25,10 @@
   <symbol id="i-plane" viewBox="0 0 24 24"><path d="M2 16l20-8-3 10-6-2-3 4v-5l9-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
   <symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v10 M9 9.5c0-1 1.3-1.5 3-1.5s3 .7 3 2-1.3 1.7-3 2-3 .8-3 2 1.3 2 3 2 3-.5 3-1.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 5 5 9-10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6l-8-3Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="m9 12 2 2 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 21c1-4 4.5-6 8-6s7 2 8 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4V5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
   <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14 M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
 </svg>
 
@@ -37,7 +41,7 @@
     <nav class="nav" aria-label="Navigation principale">
       <a href="#accueil" data-link>Accueil</a>
       <a href="#simulateur" data-link>Simulateur</a>
-      <a href="#suivi" data-link>Mon dossier</a>
+      <a href="#suivi" data-link>Espace élève</a>
       <a href="#guide" data-link>Guide</a>
       <a href="#inscription" class="btn btn-sm" data-link>S'inscrire</a>
     </nav>
@@ -102,6 +106,15 @@
     </a>
   </div>
 
+  <div class="wrap">
+    <ul class="trust">
+      <li><svg class="ic"><use href="#i-shield"/></svg>Contrat écrit avant tout paiement</li>
+      <li><svg class="ic"><use href="#i-coin"/></svg>Paiement en plusieurs fois</li>
+      <li><svg class="ic"><use href="#i-cap"/></svg>Scolarité payée directement à l'université</li>
+      <li><svg class="ic"><use href="#i-plane"/></svg>Accueil à l'aéroport en Chine</li>
+    </ul>
+  </div>
+
   <section class="block">
     <div class="wrap">
       <h2 class="title">Votre parcours en 5 étapes</h2>
@@ -124,8 +137,8 @@
 
   <section class="block" id="tarifs">
     <div class="wrap">
-      <h2 class="title">Un seul prix, payé en 3 fois</h2>
-      <p class="subtitle">Vous payez seulement quand on avance.</p>
+      <h2 class="title">Un prix clair, payé en plusieurs fois</h2>
+      <p class="subtitle">Vous payez au fur et à mesure que le dossier avance. Voici l'échéancier habituel : il peut être adapté à votre famille.</p>
       <div class="price">
         <div class="price-card">
           <span class="price-label">Pack clé en main</span>
@@ -226,26 +239,40 @@
   </div>
 </section>
 
-<!-- ================= SUIVI ================= -->
+<!-- ================= CONNEXION ESPACE ÉLÈVE ================= -->
 <section class="view" data-view="suivi" hidden>
-  <div class="page-head">
-    <div class="wrap">
-      <span class="pill">Mon dossier</span>
-      <h1>Où en est mon dossier ?</h1>
-      <p class="lead">Entrez le code reçu à la signature de votre contrat.</p>
+  <div class="login">
+    <div class="wrap login-inner">
+      <div class="login-text">
+        <span class="pill pill-light">Espace élève</span>
+        <h1>Votre dossier, à tout moment.</h1>
+        <p>Suivez chaque étape de votre départ pour la Chine : ce qui est fait, ce qu'il reste à faire, vos documents et vos paiements.</p>
+        <ul class="login-points">
+          <li><svg class="ic"><use href="#i-shield"/></svg>Espace personnel, rien que pour vous</li>
+          <li><svg class="ic"><use href="#i-track"/></svg>Mis à jour par votre conseiller</li>
+          <li><svg class="ic"><use href="#i-chat"/></svg>Une question ? Votre conseiller répond sur WhatsApp</li>
+        </ul>
+      </div>
+      <form id="suivi-form" class="panel login-card">
+        <span class="login-lock"><svg class="ic"><use href="#i-lock"/></svg></span>
+        <h2>Accéder à mon espace</h2>
+        <label for="suivi-code" class="q-label">Mon code de dossier</label>
+        <input id="suivi-code" placeholder="Ex. RI-2026-001" autocomplete="off" autocapitalize="characters">
+        <p class="form-error" id="suivi-err" hidden></p>
+        <button type="submit" class="btn btn-lg btn-full">Entrer dans mon espace <svg class="ic"><use href="#i-arrow"/></svg></button>
+        <p class="hint">Le code vous est donné à la signature du contrat. Code perdu ? Écrivez-nous sur WhatsApp.</p>
+        <div class="demo-box">
+          <b>Démonstration</b>
+          <div><button type="button" class="link-btn" data-demo="RI-DEMO-1">Aïcha</button> · <button type="button" class="link-btn" data-demo="RI-DEMO-2">Koffi</button> · <button type="button" class="link-btn" data-demo="RI-DEMO-3">Mariam</button></div>
+        </div>
+      </form>
     </div>
   </div>
-  <div class="wrap narrow">
-    <form id="suivi-form" class="panel suivi-form">
-      <label for="suivi-code" class="q-label">Code de dossier</label>
-      <div class="suivi-row">
-        <input id="suivi-code" placeholder="Ex. RI-DEMO-1" autocomplete="off" autocapitalize="characters">
-        <button type="submit" class="btn">Voir</button>
-      </div>
-      <p class="hint">Démonstration : essayez <button type="button" class="link-btn" data-demo="RI-DEMO-1">RI-DEMO-1</button>, <button type="button" class="link-btn" data-demo="RI-DEMO-2">RI-DEMO-2</button> ou <button type="button" class="link-btn" data-demo="RI-DEMO-3">RI-DEMO-3</button></p>
-    </form>
-    <div id="suivi-result" aria-live="polite"></div>
-  </div>
+</section>
+
+<!-- ================= ESPACE ÉLÈVE ================= -->
+<section class="view" data-view="espace" hidden>
+  <div id="espace"></div>
 </section>
 
 <!-- ================= GUIDE ================= -->
@@ -401,8 +428,9 @@
     <div>
       <h4>Raccourcis</h4>
       <p><a href="#simulateur" data-link>Simulateur</a></p>
-      <p><a href="#suivi" data-link>Mon dossier</a></p>
+      <p><a href="#suivi" data-link>Espace élève</a></p>
       <p><a href="#guide" data-link>Guide</a></p>
+      <p><a id="lien-agence" href="#" target="_blank" rel="noopener" class="agence-link"><svg class="ic"><use href="#i-lock"/></svg> Espace agence</a></p>
     </div>
   </div>
   <p class="wrap copyright">© <span id="annee"></span> Réussite Internationale</p>
@@ -412,7 +440,7 @@
 <nav class="tabbar" aria-label="Navigation mobile">
   <a href="#accueil" data-link><svg class="ic"><use href="#i-home"/></svg>Accueil</a>
   <a href="#simulateur" data-link><svg class="ic"><use href="#i-search"/></svg>Simulateur</a>
-  <a href="#suivi" data-link><svg class="ic"><use href="#i-track"/></svg>Dossier</a>
+  <a href="#suivi" data-link><svg class="ic"><use href="#i-user"/></svg>Mon espace</a>
   <a href="#guide" data-link><svg class="ic"><use href="#i-book"/></svg>Guide</a>
   <a href="#inscription" data-link><svg class="ic"><use href="#i-pen"/></svg>S'inscrire</a>
 </nav>

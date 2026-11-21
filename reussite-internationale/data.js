@@ -5,6 +5,9 @@
 // Coordonnées (numéro WhatsApp au format international, sans + ni espaces)
 const WHATSAPP_NUMERO = "8617822243713";
 const WHATSAPP_AFFICHE = "+86 178 2224 3713";
+
+// Lien vers l'espace agence (privé : seul le propriétaire du compte claude.ai peut l'ouvrir)
+const LIEN_ESPACE_AGENCE = "https://claude.ai/artifact/DyeMoi5zp4FKGpN2HMqGqF";
 const EMAIL_CONTACT = "contact@reussite-internationale.com";
 
 // Taux de conversion utilisé pour les estimations (à revérifier régulièrement)
@@ -53,22 +56,64 @@ const UNIVERSITES = [
 ];
 
 // -----------------------------------------------------
-//  Suivi de dossier — DONNÉES DE DÉMONSTRATION
-//  Attention : ce fichier est public. Pour de vrais élèves,
-//  il faudra une base de données avec connexion (étape suivante).
+//  Espace élève — DONNÉES DE DÉMONSTRATION
+//  Attention : ce fichier est public. Pour de vrais élèves, il faudra relier
+//  le site à une base de données privée (étape suivante).
+//  sexe : "F" ou "M" (choisit l'avatar)
 //  etape : 1 Diagnostic, 2 Choix des vœux, 3 Dossier, 4 Admission et visa, 5 Accueil en Chine
-//  tranchesPayees : nombre de tranches du pack déjà réglées (0 à 3)
+//  paiements : liste libre (le nombre de tranches et les montants peuvent changer)
 // -----------------------------------------------------
 const DOSSIERS = {
-  "RI-DEMO-1": { prenom: "Aïcha", universite: "NUAA — Ingénierie aérospatiale", etape: 3, tranchesPayees: 1, prochaine: "Envoyer la traduction certifiée du relevé de notes du bac.", maj: "18 nov. 2026" },
-  "RI-DEMO-2": { prenom: "Koffi", universite: "Shenyang Aerospace University", etape: 4, tranchesPayees: 2, prochaine: "Rendez-vous au centre des visas pour le visa X1.", maj: "20 nov. 2026" },
-  "RI-DEMO-3": { prenom: "Mariam", universite: "Jiangsu University — Médecine", etape: 5, tranchesPayees: 3, prochaine: "Bienvenue en Chine ! Ouverture du compte bancaire cette semaine.", maj: "15 nov. 2026" },
+  "RI-DEMO-1": {
+    prenom: "Aïcha", sexe: "F", universite: "Nanjing University of Aeronautics and Astronautics (NUAA)", programme: "Licence Ingénierie aérospatiale", ville: "Nanjing",
+    etape: 3, maj: "18 nov. 2026",
+    prochaine: "Envoyer la traduction certifiée de votre relevé de notes du bac.",
+    paiements: [
+      { libelle: "À la signature", montant: 500000, payee: true },
+      { libelle: "À l'admission + JW202", montant: 700000, payee: false },
+      { libelle: "Au visa X1, avant le vol", montant: 300000, payee: false },
+    ],
+    documents: [
+      { nom: "Passeport", ok: true }, { nom: "Diplôme et relevés du bac", ok: true },
+      { nom: "Lettre de motivation (Study Plan)", ok: true }, { nom: "Traduction certifiée du relevé", ok: false },
+      { nom: "Certificat médical", ok: false }, { nom: "Casier judiciaire", ok: false },
+    ],
+  },
+  "RI-DEMO-2": {
+    prenom: "Koffi", sexe: "M", universite: "Shenyang Aerospace University (SAU)", programme: "Licence Ingénierie aéronautique", ville: "Shenyang",
+    etape: 4, maj: "20 nov. 2026",
+    prochaine: "Rendez-vous au centre des visas pour déposer votre demande de visa X1.",
+    paiements: [
+      { libelle: "Acompte", montant: 400000, payee: true },
+      { libelle: "Deuxième versement", montant: 400000, payee: true },
+      { libelle: "Troisième versement", montant: 400000, payee: false },
+      { libelle: "Solde avant le vol", montant: 300000, payee: false },
+    ],
+    documents: [
+      { nom: "Passeport", ok: true }, { nom: "Admission Notice", ok: true }, { nom: "Formulaire JW202", ok: true },
+      { nom: "Photos d'identité", ok: true }, { nom: "Formulaire de visa rempli", ok: false },
+    ],
+  },
+  "RI-DEMO-3": {
+    prenom: "Mariam", sexe: "F", universite: "Jiangsu University", programme: "Médecine générale (MBBS)", ville: "Zhenjiang",
+    etape: 5, termine: true, maj: "15 nov. 2026",
+    prochaine: "Bienvenue en Chine ! Ouverture de votre compte bancaire cette semaine.",
+    paiements: [
+      { libelle: "À la signature", montant: 500000, payee: true },
+      { libelle: "À l'admission + JW202", montant: 700000, payee: true },
+      { libelle: "Au visa X1, avant le vol", montant: 300000, payee: true },
+    ],
+    documents: [
+      { nom: "Visa X1", ok: true }, { nom: "Billet d'avion", ok: true }, { nom: "Carte SIM chinoise", ok: true },
+      { nom: "Compte bancaire", ok: false }, { nom: "Permis de séjour", ok: false },
+    ],
+  },
 };
 
 const ETAPES = [
-  { titre: "Diagnostic", texte: "Entretien de 30 min : notes, anglais, budget, passeport." },
-  { titre: "Choix des vœux", texte: "3 universités : une sûre, une équilibrée, une ambitieuse." },
-  { titre: "Dossier", texte: "Traductions, lettre de motivation, recommandations, dépôt." },
-  { titre: "Admission et visa", texte: "Admission Notice, formulaire JW202, puis visa X1." },
-  { titre: "Accueil en Chine", texte: "Aéroport, dortoir, banque, carte SIM, permis de séjour." },
+  { titre: "Diagnostic", texte: "Entretien de 30 min : notes, anglais, budget, passeport.", rassure: "Nous faisons connaissance et vérifions ensemble les possibilités." },
+  { titre: "Choix des vœux", texte: "3 universités : une sûre, une équilibrée, une ambitieuse.", rassure: "Nous choisissons avec vous les universités qui vous correspondent." },
+  { titre: "Dossier", texte: "Traductions, lettre de motivation, recommandations, dépôt.", rassure: "Votre dossier est en préparation. Nous vérifions chaque document avant l'envoi." },
+  { titre: "Admission et visa", texte: "Admission Notice, formulaire JW202, puis visa X1.", rassure: "L'université a répondu : nous vous accompagnons pour le visa." },
+  { titre: "Accueil en Chine", texte: "Aéroport, dortoir, banque, carte SIM, permis de séjour.", rassure: "Vous êtes en Chine ! Nous vous aidons à bien vous installer." },
 ];
