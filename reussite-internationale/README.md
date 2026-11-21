@@ -1,9 +1,9 @@
 # Site Réussite Internationale
 
-Site de l'agence Réussite Internationale (études en Chine) : accueil, simulateur d'universités, espace élève, guide, inscription WhatsApp.
+Site de l'agence Réussite Internationale (études en Chine) : accueil, estimateur de chances, espace élève (suivi de dossier par code), guide, contact WhatsApp.
 
-- `index.html`, `style.css`, `app.js` : le site (une page, écrans par ancre `#accueil`, `#simulateur`, `#suivi`, `#espace`, `#guide`, `#inscription`).
-- `data.js` : toutes les données modifiables (WhatsApp, pack, **liste des universités**, dossiers de démonstration).
+- `index.html`, `style.css`, `app.js` : le site public (écrans par ancre `#accueil`, `#simulateur`, `#suivi`, `#espace`, `#guide`).
+- `data.js` : données modifiables (WhatsApp, pack, **liste des formations** servant au calcul de l'estimateur, dossiers de démonstration).
 - `admin.html` : espace agence (connexion par lien e-mail, réservé aux administrateurs) pour créer et suivre les dossiers.
 - `config.js` : adresse du projet Supabase et clé **publique** (jamais la clé secrète).
 - `supabase/schema.sql` : base de données (table des dossiers protégée, fonction `dossier_eleve` pour l'espace élève).
