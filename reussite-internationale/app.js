@@ -43,6 +43,10 @@ const lienWa = waLink("Bonjour Réussite Internationale, je souhaite étudier en
 $("#wa-float").href = lienWa;
 $$(".js-wa").forEach((a) => (a.href = lienWa));
 $("#annee").textContent = new Date().getFullYear();
+if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  const svg = document.querySelector(".mo-svg");
+  if (svg && svg.pauseAnimations) { svg.pauseAnimations(); svg.setCurrentTime && svg.setCurrentTime(3); }
+}
 $("#lien-agence").href = LIEN_ESPACE_AGENCE;
 
 /* ---------- Simulateur de budget ----------

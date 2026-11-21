@@ -61,13 +61,61 @@
           <a href="#suivi" class="btn btn-lg btn-light" data-link>Suivre mon dossier</a>
         </div>
       </div>
-      <div class="hero-visual">
-        <div class="photo-frame">
-          <img src="img/etudiant.jpg" width="401" height="590" alt="Étudiant africain souriant devant le drapeau chinois et un temple, un livre à la main">
+      <div class="hero-visual motion" aria-hidden="true">
+        <svg class="mo-svg" viewBox="0 0 460 460" focusable="false">
+          <defs>
+            <radialGradient id="mo-fond" cx="35%" cy="30%" r="80%">
+              <stop offset="0" stop-color="#22397a"/>
+              <stop offset="1" stop-color="#0f1e45"/>
+            </radialGradient>
+            <linearGradient id="mo-trace" x1="0" y1="1" x2="1" y2="0">
+              <stop offset="0" stop-color="#f2b33d"/>
+              <stop offset="1" stop-color="#ff5a6e"/>
+            </linearGradient>
+          </defs>
+          <circle cx="230" cy="230" r="212" fill="url(#mo-fond)"/>
+          <g class="mo-anneau"><circle cx="230" cy="230" r="188" fill="none" stroke="#ffffff" stroke-opacity=".22" stroke-width="2" stroke-dasharray="1.5 11" stroke-linecap="round"/></g>
+          <g class="mo-anneau mo-anneau-2"><circle cx="230" cy="230" r="150" fill="none" stroke="#f2b33d" stroke-opacity=".25" stroke-width="1.5" stroke-dasharray="40 18"/></g>
+          <g class="mo-etoiles" fill="#ffffff">
+            <circle cx="120" cy="120" r="2"/><circle cx="330" cy="300" r="1.6"/><circle cx="300" cy="80" r="1.8"/>
+            <circle cx="90" cy="230" r="1.4"/><circle cx="380" cy="230" r="2"/><circle cx="200" cy="380" r="1.6"/>
+          </g>
+          <path id="mo-route" d="M98 278 C 140 140, 290 90, 362 142" fill="none"/>
+          <path class="mo-trace" d="M98 278 C 140 140, 290 90, 362 142" fill="none" stroke="url(#mo-trace)" stroke-width="3" stroke-linecap="round" stroke-dasharray="7 9"/>
+          <g transform="translate(98 278)">
+            <circle class="mo-onde" r="10" fill="none" stroke="#f2b33d" stroke-width="2"/>
+            <circle class="mo-onde mo-onde-2" r="10" fill="none" stroke="#f2b33d" stroke-width="2"/>
+            <circle r="7" fill="#f2b33d"/>
+            <text x="0" y="-20" text-anchor="middle" class="mo-lieu">Afrique</text>
+          </g>
+          <g transform="translate(362 142)">
+            <circle class="mo-onde" r="10" fill="none" stroke="#ff5a6e" stroke-width="2"/>
+            <circle class="mo-onde mo-onde-2" r="10" fill="none" stroke="#ff5a6e" stroke-width="2"/>
+            <circle r="7" fill="#ff5a6e"/>
+            <text x="0" y="-20" text-anchor="middle" class="mo-lieu">Chine</text>
+          </g>
+          <g class="mo-avion">
+            <path d="M15 0 L5 -2.5 L-1 -12 L-5 -12 L-2 -2.5 L-9 -2.5 L-12.5 -7 L-15 -7 L-13 0 L-15 7 L-12.5 7 L-9 2.5 L-2 2.5 L-5 12 L-1 12 L5 2.5 Z" fill="#ffffff"/>
+            <animateMotion dur="6s" repeatCount="indefinite" rotate="auto" keyPoints="0;1" keyTimes="0;1" calcMode="spline" keySplines=".45 0 .35 1">
+              <mpath href="#mo-route"/>
+            </animateMotion>
+          </g>
+        </svg>
+
+        <div class="mo-carte">
+          <p class="mo-titre">Votre dossier avance</p>
+          <ol class="mo-etapes">
+            <li><span></span>Diagnostic</li>
+            <li><span></span>Dossier</li>
+            <li><span></span>Visa X1</li>
+            <li><span></span>Arrivée</li>
+          </ol>
+          <div class="mo-barre"><i></i></div>
         </div>
-        <div class="float-chip chip-1" aria-hidden="true"><svg class="ic"><use href="#i-plane"/></svg><span><b>Accueil à l'aéroport</b><small>dès votre arrivée</small></span></div>
-        <div class="float-chip chip-2" aria-hidden="true"><svg class="ic"><use href="#i-check"/></svg><span><b>Visa étudiant X1</b><small>dossier préparé avec vous</small></span></div>
-        <div class="float-chip chip-3" aria-hidden="true"><svg class="ic"><use href="#i-cap"/></svg><span><b>Licence · Master · Langue</b><small>en anglais ou en chinois</small></span></div>
+
+        <div class="float-chip chip-1"><svg class="ic"><use href="#i-plane"/></svg><span><b>Accueil à l'aéroport</b><small>dès votre arrivée</small></span></div>
+        <div class="float-chip chip-2"><svg class="ic"><use href="#i-pass"/></svg><span><b>Visa étudiant X1</b><small>dossier préparé avec vous</small></span></div>
+        <div class="float-chip chip-3"><svg class="ic"><use href="#i-cap"/></svg><span><b>Licence · Master · Langue</b><small>en anglais ou en chinois</small></span></div>
       </div>
     </div>
   </div>

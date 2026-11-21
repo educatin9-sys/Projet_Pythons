@@ -569,3 +569,54 @@ select:focus, input:focus, textarea:focus { outline: none; border-color: var(--r
 
 /* Le résultat du simulateur s'affiche sous la barre du haut */
 .sim-results { scroll-margin-top: 90px; }
+
+/* ===== Accueil : motion design (avion Afrique → Chine, étapes qui se cochent) ===== */
+.photo-frame { display: none; }
+.motion { position: relative; padding: 10px 10px 40px; }
+.mo-svg { display: block; width: 100%; max-width: 460px; height: auto; margin: 0 auto; overflow: visible; filter: drop-shadow(0 26px 50px rgba(15, 30, 69, .28)); }
+.mo-lieu { fill: #ffffff; font: 700 15px var(--font-title); letter-spacing: .02em; }
+.mo-anneau { transform-origin: 230px 230px; animation: tourne 60s linear infinite; }
+.mo-anneau-2 { animation-duration: 40s; animation-direction: reverse; }
+@keyframes tourne { to { transform: rotate(360deg); } }
+.mo-trace { animation: coule 1.2s linear infinite; }
+@keyframes coule { to { stroke-dashoffset: -32; } }
+.mo-onde { transform-box: fill-box; transform-origin: center; animation: onde 2.4s ease-out infinite; }
+.mo-onde-2 { animation-delay: 1.2s; }
+@keyframes onde { from { transform: scale(1); opacity: .9; } to { transform: scale(3.2); opacity: 0; } }
+.mo-etoiles circle { animation: scintille 3s ease-in-out infinite; }
+.mo-etoiles circle:nth-child(2n) { animation-delay: 1s; }
+.mo-etoiles circle:nth-child(3n) { animation-delay: 2s; }
+@keyframes scintille { 0%, 100% { opacity: .25; } 50% { opacity: 1; } }
+
+.mo-carte { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); width: min(330px, 86%); background: var(--white); border-radius: 18px; padding: 14px 16px 16px; box-shadow: 0 18px 40px rgba(15, 30, 69, .22); }
+.mo-titre { margin: 0 0 10px; font-weight: 700; font-size: .9rem; }
+.mo-etapes { list-style: none; padding: 0; margin: 0 0 12px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; font-size: .74rem; font-weight: 600; color: var(--muted); text-align: center; }
+.mo-etapes li { display: grid; justify-items: center; gap: 6px; animation: etapeFaite 8s infinite; }
+.mo-etapes span { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--line); background: var(--white); position: relative; animation: pastilleFaite 8s infinite; }
+.mo-etapes span::after { content: ""; position: absolute; left: 6px; top: 2px; width: 5px; height: 10px; border: solid #fff; border-width: 0 2.5px 2.5px 0; transform: rotate(45deg); opacity: 0; animation: cocheFaite 8s infinite; }
+.mo-etapes li:nth-child(2), .mo-etapes li:nth-child(2) span, .mo-etapes li:nth-child(2) span::after { animation-delay: 1.6s; }
+.mo-etapes li:nth-child(3), .mo-etapes li:nth-child(3) span, .mo-etapes li:nth-child(3) span::after { animation-delay: 3.2s; }
+.mo-etapes li:nth-child(4), .mo-etapes li:nth-child(4) span, .mo-etapes li:nth-child(4) span::after { animation-delay: 4.8s; }
+@keyframes pastilleFaite { 0%, 4% { background: var(--white); border-color: var(--line); transform: scale(1); } 8% { transform: scale(1.25); } 12%, 85% { background: var(--green); border-color: var(--green); transform: scale(1); } 95%, 100% { background: var(--white); border-color: var(--line); } }
+@keyframes cocheFaite { 0%, 8% { opacity: 0; } 12%, 85% { opacity: 1; } 95%, 100% { opacity: 0; } }
+@keyframes etapeFaite { 0%, 8% { color: var(--muted); } 12%, 85% { color: var(--ink); } 95%, 100% { color: var(--muted); } }
+.mo-barre { height: 8px; background: var(--soft); border-radius: 99px; overflow: hidden; }
+.mo-barre i { display: block; height: 100%; width: 0; border-radius: 99px; background: linear-gradient(90deg, var(--red), var(--gold)); animation: remplit 8s infinite; }
+@keyframes remplit { 0% { width: 0; } 70%, 85% { width: 100%; } 95%, 100% { width: 0; } }
+
+.motion .float-chip { animation: entreeChip .7s ease-out forwards, flotte 5s ease-in-out infinite; }
+.motion .chip-1 { top: 30px; left: -6px; animation-delay: .5s, 1.2s; }
+.motion .chip-2 { top: 42%; right: -10px; animation-delay: 1.1s, 1.8s; }
+.motion .chip-3 { display: none; }
+@keyframes flotte { 0%, 100% { translate: 0 0; } 50% { translate: 0 -8px; } }
+@media (max-width: 760px) {
+  .motion { padding: 0 0 50px; }
+  .motion .chip-1 { top: 8px; left: -4px; }
+  .motion .chip-2 { right: -4px; top: 46%; }
+  .mo-etapes { font-size: .7rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mo-anneau, .mo-trace, .mo-onde, .mo-etoiles circle, .mo-etapes li, .mo-etapes span, .mo-etapes span::after, .mo-barre i, .motion .float-chip { animation: none !important; }
+  .motion .float-chip { opacity: 1; }
+  .mo-barre i { width: 75%; }
+}
