@@ -138,7 +138,7 @@ $("#sim-form").addEventListener("submit", (e) => {
   if (precision === "general") notes.push(`Nous avons encore peu de données sur « ${autre} » : le budget s'appuie sur l'ensemble des formations de ce niveau.`);
   if (precision === "ville") notes.push("Peu de données pour ce type de ville : le budget s'appuie sur toutes les villes.");
   if (choix.ville !== "grande") notes.push("À Pékin, Shanghai et Canton, le logement et la vie quotidienne coûtent plus cher.");
-  if (choix.niveau !== "Année de langue") notes.push("Votre conseiller peut proposer une université dont le prix correspond à votre budget, ainsi que des bourses quand c'est possible.");
+  if (choix.niveau !== "Année de langue") notes.push("Votre conseiller vous propose une université, souvent privée, dont le prix correspond à votre budget : l'admission y est plus accessible.");
 
   const msg = `Bonjour Réussite Internationale, j'ai fait la simulation de budget sur votre site : ${choix.niveau}, ${formation}${villeTxt ? ", " + villeTxt : ""}. Budget moyen : environ ${fcfa(arrondi(totalAn))} FCFA par an tout compris. Je voudrais être accompagné(e).`;
 
