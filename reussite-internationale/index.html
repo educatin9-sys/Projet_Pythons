@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Réussite Internationale</title>
-  <meta name="description" content="Réussite Internationale accompagne les étudiants vers les universités chinoises : simulateur d'universités, suivi de dossier, guide et inscription.">
+  <meta name="description" content="Réussite Internationale accompagne les étudiants vers les universités chinoises : estimation de vos chances, suivi de dossier en ligne et guide pour étudier en Chine.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -40,10 +40,9 @@
     </a>
     <nav class="nav" aria-label="Navigation principale">
       <a href="#accueil" data-link>Accueil</a>
-      <a href="#simulateur" data-link>Simulateur</a>
-      <a href="#suivi" data-link>Espace élève</a>
+      <a href="#simulateur" data-link>Mes chances</a>
       <a href="#guide" data-link>Guide</a>
-      <a href="#inscription" class="btn btn-sm" data-link>S'inscrire</a>
+      <a href="#suivi" class="btn btn-sm" data-link>Mon espace</a>
     </nav>
   </div>
 </header>
@@ -59,8 +58,8 @@
         <h1>Étudiez en Chine.<br><span class="hl">On s'occupe du reste.</span></h1>
         <p class="lead">Choix de l'université, dossier, visa et accueil à l'aéroport : Réussite Internationale vous accompagne à chaque étape, en toute transparence.</p>
         <div class="hero-actions">
-          <a href="#simulateur" class="btn btn-lg" data-link>Trouver mon université <svg class="ic"><use href="#i-arrow"/></svg></a>
-          <a href="#inscription" class="btn btn-lg btn-light" data-link>Diagnostic gratuit</a>
+          <a href="#simulateur" class="btn btn-lg" data-link>Estimer mes chances <svg class="ic"><use href="#i-arrow"/></svg></a>
+          <a href="#suivi" class="btn btn-lg btn-light" data-link>Suivre mon dossier</a>
         </div>
       </div>
       <div class="hero-visual" aria-hidden="true">
@@ -88,8 +87,8 @@
   <div class="wrap quick">
     <a href="#simulateur" class="quick-card" data-link>
       <span class="quick-ic red"><svg class="ic"><use href="#i-search"/></svg></span>
-      <h3>Simulateur d'universités</h3>
-      <p>Répondez à 6 questions et voyez les universités qui peuvent vous accepter, avec le coût par mois.</p>
+      <h3>Estimer mes chances</h3>
+      <p>Répondez à 6 questions : vos chances d'admission et le budget moyen par an, en 1 minute.</p>
       <span class="more">Lancer <svg class="ic"><use href="#i-arrow"/></svg></span>
     </a>
     <a href="#suivi" class="quick-card" data-link>
@@ -144,7 +143,7 @@
           <span class="price-label">Pack clé en main</span>
           <p class="price-big"><span id="pack-total"></span> <small>FCFA</small></p>
           <p class="price-muted">par étudiant</p>
-          <a href="#inscription" class="btn btn-white" data-link>Commencer</a>
+          <a class="btn btn-white js-wa" href="#" target="_blank" rel="noopener">Nous écrire sur WhatsApp</a>
         </div>
         <ol class="tranches" id="tranches"></ol>
       </div>
@@ -167,7 +166,7 @@
   <section class="cta">
     <div class="wrap cta-inner">
       <div><h2>Prêt à partir ?</h2><p>Le diagnostic est gratuit et sans engagement.</p></div>
-      <a href="#inscription" class="btn btn-lg btn-white" data-link>Je m'inscris</a>
+      <a class="btn btn-lg btn-white js-wa" href="#" target="_blank" rel="noopener">Nous écrire sur WhatsApp</a>
     </div>
   </section>
 </section>
@@ -176,9 +175,9 @@
 <section class="view" data-view="simulateur" hidden>
   <div class="page-head">
     <div class="wrap">
-      <span class="pill">Simulateur</span>
-      <h1>Quelles universités peuvent m'accepter ?</h1>
-      <p class="lead">6 questions, 1 minute. Les résultats sont indicatifs : un conseiller confirme tout lors du diagnostic.</p>
+      <span class="pill">Estimateur</span>
+      <h1>Quelles sont mes chances d'étudier en Chine ?</h1>
+      <p class="lead">Répondez à 6 questions. Vous obtenez une estimation de vos chances d'admission et du budget moyen à prévoir. Le choix des universités se fait ensuite avec votre conseiller.</p>
     </div>
   </div>
 
@@ -193,21 +192,20 @@
         </div>
       </div>
       <div class="q">
-        <span class="q-label"><b>2</b> Quel domaine ?</span>
+        <span class="q-label"><b>2</b> Quelle formation ?</span>
         <div class="choices" data-name="domaine">
           <button type="button" class="choice active" data-value="Tous">Peu importe</button>
           <button type="button" class="choice" data-value="Médecine">Médecine</button>
           <button type="button" class="choice" data-value="Pharmacie">Pharmacie</button>
-          <button type="button" class="choice" data-value="Aéronautique">Aéronautique</button>
           <button type="button" class="choice" data-value="Informatique et génie">Informatique et génie</button>
           <button type="button" class="choice" data-value="Commerce et gestion">Commerce et gestion</button>
+          <button type="button" class="choice" data-value="Aéronautique">Aéronautique</button>
           <button type="button" class="choice" data-value="Langue chinoise">Langue chinoise</button>
           <button type="button" class="choice choice-other" data-value="Autre">+ Autre</button>
         </div>
         <div class="autre" id="sim-autre-box" hidden>
-          <label for="sim-autre">Quelle formation cherchez-vous ?</label>
-          <input id="sim-autre" list="sim-autre-list" placeholder="Ex. Pharmacie, Architecture, Génie pétrolier…" autocomplete="off">
-          <datalist id="sim-autre-list"></datalist>
+          <label for="sim-autre">Écrivez la formation que vous cherchez</label>
+          <input id="sim-autre" placeholder="Ex. Architecture, Génie pétrolier, Soins infirmiers…" autocomplete="off">
         </div>
       </div>
       <div class="q">
@@ -226,20 +224,17 @@
         </div>
       </div>
       <div class="q">
-        <label class="q-label" for="sim-budget"><b>5</b> Budget de la famille par an (scolarité + logement)</label>
-        <select id="sim-budget">
-          <option value="2000000">Jusqu'à 2 000 000 FCFA</option>
-          <option value="2500000">Jusqu'à 2 500 000 FCFA</option>
-          <option value="3000000" selected>Jusqu'à 3 000 000 FCFA</option>
-          <option value="4000000">Jusqu'à 4 000 000 FCFA</option>
-          <option value="99000000">Plus de 4 000 000 FCFA</option>
-        </select>
+        <label class="q-label" for="sim-budget"><b>5</b> Budget de la famille par an <span class="q-hint">(scolarité + logement)</span></label>
+        <div class="range">
+          <input type="range" id="sim-budget" min="1000000" max="8000000" step="250000" value="3000000">
+          <output id="sim-budget-out">3 000 000 FCFA</output>
+        </div>
       </div>
       <div class="q">
         <label class="q-label" for="sim-age"><b>6</b> Votre âge</label>
         <input type="number" id="sim-age" min="15" max="45" value="19" inputmode="numeric">
       </div>
-      <button type="submit" class="btn btn-lg btn-full">Voir mes universités <svg class="ic"><use href="#i-search"/></svg></button>
+      <button type="submit" class="btn btn-lg btn-full">Voir mes chances <svg class="ic"><use href="#i-search"/></svg></button>
     </form>
 
     <div class="sim-results" id="sim-results" aria-live="polite"></div>
@@ -361,64 +356,6 @@
   </div>
 </section>
 
-<!-- ================= INSCRIPTION ================= -->
-<section class="view" data-view="inscription" hidden>
-  <div class="page-head">
-    <div class="wrap">
-      <span class="pill">Inscription</span>
-      <h1>Réservez votre diagnostic gratuit</h1>
-      <p class="lead">Le formulaire s'envoie sur notre WhatsApp. Un conseiller vous répond rapidement.</p>
-    </div>
-  </div>
-  <div class="wrap narrow">
-    <form id="form-inscription" class="panel form" novalidate>
-      <div class="chosen" id="chosen-uni" hidden></div>
-      <div class="row">
-        <label for="f-nom">Nom *<input id="f-nom" name="nom" required autocomplete="family-name"></label>
-        <label for="f-prenom">Prénom *<input id="f-prenom" name="prenom" required autocomplete="given-name"></label>
-      </div>
-      <div class="row">
-        <label for="f-tel">Téléphone WhatsApp *<input id="f-tel" name="telephone" type="tel" required placeholder="+225 07 00 00 00 00" autocomplete="tel"></label>
-        <label for="f-email">E-mail<input id="f-email" name="email" type="email" autocomplete="email"></label>
-      </div>
-      <div class="row">
-        <label for="f-pays">Pays *<input id="f-pays" name="pays" required autocomplete="country-name"></label>
-        <label for="f-niveau">Niveau visé *
-          <select id="f-niveau" name="niveau" required>
-            <option value="">Choisir…</option>
-            <option>Licence</option>
-            <option>Master</option>
-            <option>Année de langue</option>
-          </select>
-        </label>
-      </div>
-      <div class="row">
-        <label for="f-domaine">Domaine souhaité<input id="f-domaine" name="domaine" placeholder="Ex. Médecine, Aéronautique…"></label>
-        <label for="f-passeport">Passeport
-          <select id="f-passeport" name="passeport">
-            <option value="">Choisir…</option>
-            <option>Oui, valide</option>
-            <option>En cours</option>
-            <option>Non</option>
-          </select>
-        </label>
-      </div>
-      <label for="f-profil">Vous êtes
-        <select id="f-profil" name="profil">
-          <option>L'étudiant(e)</option>
-          <option>Un parent</option>
-        </select>
-      </label>
-      <label for="f-message">Message<textarea id="f-message" name="message" rows="3" placeholder="Vos questions, votre budget…"></textarea></label>
-      <input type="hidden" name="universite" id="f-universite">
-      <label class="consent" for="f-consent"><input id="f-consent" type="checkbox" name="consent" required> J'accepte d'être recontacté(e) par Réussite Internationale. *</label>
-      <p class="form-error" role="alert" hidden></p>
-      <button type="submit" class="btn btn-lg btn-full">Envoyer sur WhatsApp</button>
-      <div class="form-success" role="status" hidden></div>
-    </form>
-  </div>
-</section>
-
 </main>
 
 <footer class="footer">
@@ -434,7 +371,7 @@
     </div>
     <div>
       <h4>Raccourcis</h4>
-      <p><a href="#simulateur" data-link>Simulateur</a></p>
+      <p><a href="#simulateur" data-link>Estimer mes chances</a></p>
       <p><a href="#suivi" data-link>Espace élève</a></p>
       <p><a href="#guide" data-link>Guide</a></p>
       <p><a id="lien-agence" href="#" target="_blank" rel="noopener" class="agence-link"><svg class="ic"><use href="#i-lock"/></svg> Espace agence</a></p>
@@ -446,10 +383,10 @@
 <!-- Barre d'onglets mobile -->
 <nav class="tabbar" aria-label="Navigation mobile">
   <a href="#accueil" data-link><svg class="ic"><use href="#i-home"/></svg>Accueil</a>
-  <a href="#simulateur" data-link><svg class="ic"><use href="#i-search"/></svg>Simulateur</a>
+  <a href="#simulateur" data-link><svg class="ic"><use href="#i-search"/></svg>Mes chances</a>
   <a href="#suivi" data-link><svg class="ic"><use href="#i-user"/></svg>Mon espace</a>
   <a href="#guide" data-link><svg class="ic"><use href="#i-book"/></svg>Guide</a>
-  <a href="#inscription" data-link><svg class="ic"><use href="#i-pen"/></svg>S'inscrire</a>
+  <a class="js-wa" href="#" target="_blank" rel="noopener"><svg class="ic"><use href="#i-chat"/></svg>WhatsApp</a>
 </nav>
 
 <a class="wa-float" id="wa-float" href="#" target="_blank" rel="noopener" aria-label="Nous écrire sur WhatsApp">

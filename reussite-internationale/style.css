@@ -479,3 +479,37 @@ select:focus, input:focus, textarea:focus { outline: none; border-color: var(--r
 .request p { margin: 0; color: var(--muted); }
 .src { text-decoration: none; }
 .src:hover { text-decoration: underline; }
+
+/* ===== Estimateur de chances ===== */
+.q-hint { color: var(--muted); font-weight: 500; font-size: .85rem; }
+.est { display: grid; gap: 16px; }
+.est-card { background: var(--white); border: 1px solid var(--line); border-radius: 20px; padding: 22px; min-width: 0; }
+.est-chance { display: flex; gap: 22px; align-items: center; }
+.est-chance .muted { margin: 4px 0 0; }
+.est-big { font-family: var(--font-title); font-size: 1.5rem; font-weight: 700; margin: 0; }
+.c-top { border-color: #f5b38a; background: linear-gradient(135deg, #fff5ec, var(--white)); }
+.c-bon { border-color: #f8cf9a; background: linear-gradient(135deg, #fff8ef, var(--white)); }
+.ring.c-top .ring-fg, .ring.c-bon .ring-fg { stroke: #e8590c; }
+.ring.c-moy .ring-fg { stroke: var(--gold); }
+.ring.c-ambi .ring-fg { stroke: var(--navy); }
+.est-cost-top { display: flex; justify-content: space-between; gap: 14px; align-items: flex-start; flex-wrap: wrap; }
+.est-money { font-family: var(--font-title); font-size: clamp(1.7rem, 4vw, 2.3rem); font-weight: 800; margin: 2px 0 4px; font-variant-numeric: tabular-nums; }
+.est-cost .muted { margin: 0; }
+.est-line { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; padding: 12px 14px; border-radius: 12px; background: var(--soft); margin-top: 10px; }
+.est-line b { font-variant-numeric: tabular-nums; }
+.t-vert.est-cost { border-color: #9fd8b2; background: linear-gradient(135deg, #ecf8f0, var(--white)); }
+.t-jaune.est-cost { border-color: #f3d48a; background: linear-gradient(135deg, #fdf6e2, var(--white)); }
+.t-rouge.est-cost { border-color: #e9a3ad; background: linear-gradient(135deg, #fcebee, var(--white)); }
+.tier { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: .88rem; padding: .4em .9em; border-radius: 999px; white-space: nowrap; }
+.tier.t-vert { background: #d9f2e2; color: #146c34; }
+.tier.t-jaune { background: #fbeccb; color: #8a5a00; }
+.tier.t-rouge { background: #f9d9de; color: #a00d24; }
+.est-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.est-mid { font-family: var(--font-title); font-size: 1.6rem; font-weight: 800; margin: 0 0 8px; }
+.est-tips { margin: 0; padding-left: 1.1em; display: grid; gap: 8px; }
+.legend-tiers { display: flex; flex-wrap: wrap; gap: 8px; }
+.legend-tiers .tier { font-size: .8rem; white-space: normal; }
+@media (max-width: 760px) {
+  .est-chance { flex-direction: column; align-items: flex-start; }
+  .est-grid { grid-template-columns: 1fr; }
+}
