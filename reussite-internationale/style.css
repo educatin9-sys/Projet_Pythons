@@ -517,3 +517,10 @@ select:focus, input:focus, textarea:focus { outline: none; border-color: var(--r
 .est-total { background: var(--navy) !important; color: var(--white); font-weight: 600; }
 .choice .q-hint { font-size: .8rem; }
 .choice.active .q-hint { color: rgba(255,255,255,.8); }
+
+/* Bannière d'accueil (affiche verticale sur téléphone) */
+.banner { background: var(--soft); padding-block: 20px 0; }
+.banner picture, .banner img { display: block; width: 100%; height: auto; max-width: 100%; }
+.banner img { border-radius: 18px; box-shadow: var(--shadow); }
+.banner + .hero { padding-top: 40px; }
+@media (max-width: 760px) { .banner { padding-block: 12px 0; } .banner img { border-radius: 14px; } }
