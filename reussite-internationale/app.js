@@ -181,7 +181,7 @@ $("#sim-form").addEventListener("submit", (e) => {
     <a class="btn btn-lg btn-full btn-wa" href="${waLink(msg)}" target="_blank" rel="noopener"><svg class="ic"><use href="#i-chat"/></svg> Parler à un conseiller sur WhatsApp</a>
     <p class="muted small">Budget indicatif, calculé à partir des prix des universités que nous suivons, vérifiés régulièrement. Le prix exact dépend de l'université choisie avec votre conseiller. L'accompagnement de l'agence est en plus.</p>
   </div>`;
-  if (window.innerWidth < 1000) zone.scrollIntoView({ behavior: "smooth" });
+  zone.scrollIntoView({ behavior: "smooth", block: "start" });
 });
 
 $("#sim-results").innerHTML = `<div class="empty"><svg class="ic"><use href="#i-coin"/></svg><p><b>Votre budget apparaîtra ici.</b><br>Choisissez votre niveau et votre formation, puis appuyez sur « Calculer mon budget ».</p></div>`;

@@ -34,9 +34,8 @@
 
 <header class="topbar">
   <div class="wrap topbar-inner">
-    <a href="#accueil" class="logo" data-link>
-      <span class="logo-mark">RI</span>
-      <span class="logo-text">Réussite<br><strong>Internationale</strong></span>
+    <a href="#accueil" class="logo" data-link aria-label="Réussite Internationale, accueil">
+      <img src="img/logo.png" width="543" height="180" alt="Réussite Internationale">
     </a>
     <nav class="nav" aria-label="Navigation principale">
       <a href="#accueil" data-link>Accueil</a>
@@ -51,14 +50,6 @@
 
 <!-- ================= ACCUEIL ================= -->
 <section class="view" data-view="accueil">
-  <div class="banner">
-    <div class="wrap">
-      <picture>
-        <source media="(max-width: 760px)" srcset="img/affiche.jpg" width="986" height="1078">
-        <img src="img/banniere.jpg" width="1024" height="384" alt="Réussite Internationale : étudier en Chine, un rêve possible avec nous. Nos services : conseil et orientation, dossier d'admission, visa étudiant, logement, accompagnement avant le départ et sur place. WhatsApp +86 178 2224 3713.">
-      </picture>
-    </div>
-  </div>
   <div class="hero">
     <div class="wrap hero-inner">
       <div class="hero-text">
@@ -70,24 +61,13 @@
           <a href="#suivi" class="btn btn-lg btn-light" data-link>Suivre mon dossier</a>
         </div>
       </div>
-      <div class="hero-visual" aria-hidden="true">
-        <div class="boarding">
-          <div class="boarding-top">
-            <div><small>De</small><b>Abidjan</b></div>
-            <svg class="ic ic-lg"><use href="#i-plane"/></svg>
-            <div class="right"><small>Vers</small><b>Nanjing</b></div>
-          </div>
-          <div class="boarding-body">
-            <div class="mini-progress"><span style="width:80%"></span></div>
-            <p><b>Étape 4 / 5</b> · Visa X1 en cours</p>
-            <ul>
-              <li class="ok">Admission Notice reçue</li>
-              <li class="ok">JW202 reçu</li>
-              <li>Visa X1</li>
-            </ul>
-          </div>
-          <div class="boarding-foot">Exemple de suivi de dossier</div>
+      <div class="hero-visual">
+        <div class="photo-frame">
+          <img src="img/etudiant.jpg" width="401" height="590" alt="Étudiant africain souriant devant le drapeau chinois et un temple, un livre à la main">
         </div>
+        <div class="float-chip chip-1" aria-hidden="true"><svg class="ic"><use href="#i-plane"/></svg><span><b>Accueil à l'aéroport</b><small>dès votre arrivée</small></span></div>
+        <div class="float-chip chip-2" aria-hidden="true"><svg class="ic"><use href="#i-check"/></svg><span><b>Visa étudiant X1</b><small>dossier préparé avec vous</small></span></div>
+        <div class="float-chip chip-3" aria-hidden="true"><svg class="ic"><use href="#i-cap"/></svg><span><b>Licence · Master · Langue</b><small>en anglais ou en chinois</small></span></div>
       </div>
     </div>
   </div>
@@ -144,11 +124,12 @@
 
   <section class="block" id="tarifs">
     <div class="wrap">
-      <h2 class="title">Un prix clair, payé en plusieurs fois</h2>
-      <p class="subtitle">Vous payez au fur et à mesure que le dossier avance. Voici l'échéancier habituel : il peut être adapté à votre famille.</p>
+      <p class="sim-note"><svg class="ic"><use href="#i-coin"/></svg><span><b>Exemple de simulation.</b> Le montant réel de l'accompagnement est fixé avec vous selon votre projet, et il se paie petit à petit, au rythme de l'avancée du dossier.</span></p>
+      <h2 class="title">Un accompagnement payé en plusieurs fois</h2>
+      <p class="subtitle">Vous ne payez pas tout d'un coup : chaque versement correspond à une étape franchie. Voici un exemple d'échéancier, adapté ensuite à chaque famille.</p>
       <div class="price">
         <div class="price-card">
-          <span class="price-label">Pack clé en main</span>
+          <span class="price-label">Exemple : pack clé en main</span>
           <p class="price-big"><span id="pack-total"></span> <small>FCFA</small></p>
           <p class="price-muted">par étudiant</p>
           <a class="btn btn-white js-wa" href="#" target="_blank" rel="noopener">Nous écrire sur WhatsApp</a>
@@ -351,7 +332,7 @@
 <footer class="footer">
   <div class="wrap footer-inner">
     <div>
-      <span class="logo logo-light"><span class="logo-mark">RI</span><span class="logo-text">Réussite<br><strong>Internationale</strong></span></span>
+      <span class="logo-foot"><img src="img/logo.png" width="543" height="180" alt="Réussite Internationale"></span>
       <p>Agence d'accompagnement des étudiants vers les universités chinoises.</p>
     </div>
     <div>

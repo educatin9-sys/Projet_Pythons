@@ -8,7 +8,7 @@ const WHATSAPP_AFFICHE = "+86 178 2224 3713";
 
 // Lien vers l'espace agence (privé : seul le propriétaire du compte claude.ai peut l'ouvrir)
 const LIEN_ESPACE_AGENCE = "https://claude.ai/artifact/DyeMoi5zp4FKGpN2HMqGqF";
-const EMAIL_CONTACT = "contact@reussite-internationale.com";
+const EMAIL_CONTACT = "educatin9@gmail.com";
 
 // Taux de conversion utilisé pour les estimations (à revérifier régulièrement)
 const TAUX_RMB_FCFA = 86;
