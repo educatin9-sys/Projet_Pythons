@@ -133,7 +133,8 @@ function carteUni(u, index) {
     </div>
     <div class="uni-foot">
       <div class="tags">
-        ${u.verifie ? `<span class="badge b-info">Scolarité vérifiée (${esc(u.verifie)})</span>` : `<span class="badge b-grey">Estimation à confirmer</span>`}
+        ${u.verifie ? `<span class="badge b-info">Prix vérifié (${esc(u.verifie)})</span>` : `<span class="badge b-grey">Estimation à confirmer</span>`}
+        ${u.source ? `<a class="badge b-grey src" href="${esc(u.source)}" target="_blank" rel="noopener">Source officielle ↗</a>` : ""}
         ${u.notes.map((n) => `<span class="badge b-mid">${esc(n)}</span>`).join("")}
       </div>
       <button type="button" class="btn btn-sm" data-choisir="${index}">Je choisis cette université</button>

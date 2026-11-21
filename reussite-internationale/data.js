@@ -29,8 +29,11 @@ const PACK = {
 //  - vie : budget de vie estimé par mois (nourriture, transport, téléphone), en RMB
 //  - selectivite : 1 = vœu sûr, 2 = équilibre, 3 = ambitieux, 4 = très sélective
 //  - moyenneMin : moyenne /20 à partir de laquelle les chances sont correctes
-//  - verifie : true si la scolarité a été vérifiée sur le site officiel (avec la date)
-//    false = estimation à confirmer avant de la donner à un client
+//  - verifie : date à laquelle la scolarité a été lue sur une page officielle
+//    (ex. "nov. 2026"), ou false = estimation à confirmer avant de la donner à un client
+//  - source : lien de la page officielle où le prix a été lu (quand il existe)
+//  - Le dortoir est une estimation sauf mention contraire.
+//  Liste actualisée chaque semaine par une tâche planifiée (voir README).
 // -----------------------------------------------------
 const UNIVERSITES = [
   // Aéronautique — scolarités vérifiées en novembre 2026
@@ -53,6 +56,33 @@ const UNIVERSITES = [
   { nom: "Dalian University of Technology", ville: "Dalian", domaine: "Commerce et gestion", niveau: "Master", programme: "MBA international", langue: "Anglais", duree: "2 ans", scolarite: 40000, dortoir: 6000, vie: 1600, selectivite: 2, moyenneMin: 12, verifie: false },
   { nom: "Tianjin Normal University", ville: "Tianjin", domaine: "Langue chinoise", niveau: "Année de langue", programme: "Chinois intensif (1 an)", langue: "Chinois", duree: "1 an", scolarite: 16000, dortoir: 6000, vie: 1700, selectivite: 1, moyenneMin: 8, verifie: false },
   { nom: "Beijing Language and Culture University", ville: "Pékin", domaine: "Langue chinoise", niveau: "Année de langue", programme: "Chinois intensif (1 an)", langue: "Chinois", duree: "1 an", scolarite: 26000, dortoir: 12000, vie: 2200, selectivite: 1, moyenneMin: 8, verifie: false },
+
+  // ---- Ajouts du 21 nov. 2026 : scolarités lues sur les pages officielles ----
+  // Médecine
+  { nom: "Xiamen University", ville: "Xiamen", domaine: "Médecine", niveau: "Licence", programme: "Médecine générale (MBBS)", langue: "Anglais", duree: "6 ans", scolarite: 38000, dortoir: 7000, vie: 1800, selectivite: 3, moyenneMin: 13.5, verifie: "nov. 2026", source: "https://mbbs.xmu.edu.cn/info/1211/3755.htm" },
+  { nom: "Xi'an Jiaotong University", ville: "Xi'an", domaine: "Médecine", niveau: "Licence", programme: "Médecine générale (MBBS)", langue: "Anglais", duree: "6 ans", scolarite: 40000, dortoir: 6000, vie: 1500, selectivite: 3, moyenneMin: 13.5, verifie: "nov. 2026", source: "https://sie.xjtu.edu.cn/en/YXBK.pdf" },
+  // Pharmacie
+  { nom: "Jiangsu University", ville: "Zhenjiang", domaine: "Pharmacie", niveau: "Licence", programme: "Pharmacie", langue: "Anglais", duree: "4 ans", scolarite: 22000, dortoir: 5000, vie: 1500, selectivite: 1, moyenneMin: 10.5, verifie: "nov. 2026", source: "https://oec.ujs.edu.cn/en/PROGRAMS/Bachelor.htm" },
+  { nom: "China Pharmaceutical University", ville: "Nanjing", domaine: "Pharmacie", niveau: "Licence", programme: "Pharmacie / Pharmacie clinique", langue: "Anglais", duree: "4 ans", scolarite: 25000, dortoir: 6000, vie: 1600, selectivite: 2, moyenneMin: 12, verifie: "nov. 2026", source: "https://international.cpu.edu.cn/5b/d7/c399a89047/page.psp" },
+  // Informatique et génie
+  { nom: "Jiangsu University", ville: "Zhenjiang", domaine: "Informatique et génie", niveau: "Licence", programme: "Génie civil", langue: "Anglais", duree: "4 ans", scolarite: 20000, dortoir: 5000, vie: 1500, selectivite: 1, moyenneMin: 10, verifie: "nov. 2026", source: "https://oec.ujs.edu.cn/en/PROGRAMS/Bachelor.htm" },
+  { nom: "Shanghai University of Engineering Science (SUES)", ville: "Shanghai", domaine: "Informatique et génie", niveau: "Licence", programme: "Intelligence artificielle", langue: "Anglais", duree: "4 ans", scolarite: 20000, dortoir: 1200, vie: 2400, selectivite: 1, moyenneMin: 10.5, verifie: "nov. 2026", source: "https://cie.sues.edu.cn/21908/list.htm" },
+  { nom: "China University of Petroleum (Beijing)", ville: "Pékin", domaine: "Informatique et génie", niveau: "Licence", programme: "Informatique", langue: "Chinois et anglais", duree: "4 ans", scolarite: 25000, dortoir: 9000, vie: 2200, selectivite: 2, moyenneMin: 12, verifie: "nov. 2026", source: "https://cup.edu.cn/overseas/Admission/UP2/54ab5d4b8d334aa895da43a3b2bf428a.htm" },
+  { nom: "Tsinghua University", ville: "Pékin", domaine: "Informatique et génie", niveau: "Licence", programme: "Informatique", langue: "Chinois et anglais", duree: "4 ans", scolarite: 30000, dortoir: 10000, vie: 2200, selectivite: 4, moyenneMin: 16, verifie: "page de sept. 2025", source: "https://international.join-tsinghua.edu.cn/info/1027/1020.htm" },
+  { nom: "Tongji University", ville: "Shanghai", domaine: "Informatique et génie", niveau: "Master", programme: "Master Génie civil", langue: "Anglais", duree: "2 à 3 ans", scolarite: 35000, dortoir: 9000, vie: 2400, selectivite: 3, moyenneMin: 13, verifie: "page non datée", source: "https://study.tongji.edu.cn/en/CURRENT_STUDENTS/Free_Costs.htm" },
+  // Commerce et gestion
+  { nom: "Jiangsu University", ville: "Zhenjiang", domaine: "Commerce et gestion", niveau: "Licence", programme: "Économie et commerce international", langue: "Anglais", duree: "4 ans", scolarite: 18000, dortoir: 5000, vie: 1500, selectivite: 1, moyenneMin: 10, verifie: "nov. 2026", source: "https://oec.ujs.edu.cn/en/PROGRAMS/Bachelor.htm" },
+  { nom: "Zhejiang Gongshang University", ville: "Hangzhou", domaine: "Commerce et gestion", niveau: "Licence", programme: "Commerce international", langue: "Anglais", duree: "4 ans", scolarite: 18000, dortoir: 6000, vie: 1800, selectivite: 1, moyenneMin: 10, verifie: "nov. 2026", source: "https://sie.zjgsu.edu.cn/_upload/article/files/6c/86/85acca5748aab66706c31ef18d27/c549f768-d773-43ff-a345-9a59341f8150.pdf" },
+  { nom: "Zhejiang Gongshang University", ville: "Hangzhou", domaine: "Commerce et gestion", niveau: "Master", programme: "Master Gestion des entreprises", langue: "Anglais", duree: "2 ans", scolarite: 25000, dortoir: 6000, vie: 1800, selectivite: 1, moyenneMin: 11, verifie: "nov. 2026", source: "https://sie.zjgsu.edu.cn/_upload/article/files/ce/00/f0aead0342bf8c9eb1bf8b66429b/1717e06d-3d1f-44c6-aafc-2f4b5bea003a.pdf" },
+  // Année de langue chinoise (prix d'une année = 2 semestres)
+  { nom: "Northwest A&F University", ville: "Yangling", domaine: "Langue chinoise", niveau: "Année de langue", programme: "Chinois (1 an)", langue: "Chinois", duree: "1 an", scolarite: 12800, dortoir: 4000, vie: 1300, selectivite: 1, moyenneMin: 8, verifie: "nov. 2026", source: "https://gjs.nwafu.edu.cn/en/ApplicationGuide/fcfa62743393434a8fd599efa0cc5474.htm" },
+  { nom: "Nankai University", ville: "Tianjin", domaine: "Langue chinoise", niveau: "Année de langue", programme: "Chinois (1 an)", langue: "Chinois", duree: "1 an", scolarite: 14000, dortoir: 7000, vie: 1700, selectivite: 1, moyenneMin: 8, verifie: "nov. 2026", source: "https://ensie.nankai.edu.cn/info/1077/1132.htm" },
+  { nom: "Zhejiang University", ville: "Hangzhou", domaine: "Langue chinoise", niveau: "Année de langue", programme: "Chinois (1 an)", langue: "Chinois", duree: "1 an", scolarite: 18000, dortoir: 9000, vie: 1800, selectivite: 1, moyenneMin: 9, verifie: "nov. 2026", source: "https://iczu.zju.edu.cn/admissionsen/whinesewwanguagewwwwulturewwrograms/list.htm" },
+  { nom: "Shanghai Jiao Tong University", ville: "Shanghai", domaine: "Langue chinoise", niveau: "Année de langue", programme: "Chinois (1 an)", langue: "Chinois", duree: "1 an", scolarite: 21000, dortoir: 12000, vie: 2400, selectivite: 1, moyenneMin: 9, verifie: "nov. 2026", source: "https://en.sjtu.edu.cn/news-events/notice/2626" },
+  { nom: "Donghua University", ville: "Shanghai", domaine: "Langue chinoise", niveau: "Année de langue", programme: "Chinois général (1 an)", langue: "Chinois", duree: "1 an", scolarite: 21600, dortoir: 10000, vie: 2400, selectivite: 1, moyenneMin: 8, verifie: "nov. 2026", source: "https://english.dhu.edu.cn/2021/0702/c5220a372805/page.htm" },
+  { nom: "Beijing Normal University", ville: "Pékin", domaine: "Langue chinoise", niveau: "Année de langue", programme: "Chinois (1 an)", langue: "Chinois", duree: "1 an", scolarite: 22400, dortoir: 12000, vie: 2200, selectivite: 1, moyenneMin: 9, verifie: "nov. 2026", source: "https://admission-is.bnu.edu.cn/english/admissionprogram/nondegreeprogram/chineselearningprogram/index.html" },
+  { nom: "East China Normal University", ville: "Shanghai", domaine: "Langue chinoise", niveau: "Année de langue", programme: "Chinois standard (1 an)", langue: "Chinois", duree: "1 an", scolarite: 24000, dortoir: 12000, vie: 2400, selectivite: 1, moyenneMin: 8, verifie: "nov. 2026", source: "https://lxs.ecnu.edu.cn/en_admission_chinese_language_programs_standard_chinese_language_program/list.htm" },
+  { nom: "Xiamen University", ville: "Xiamen", domaine: "Langue chinoise", niveau: "Année de langue", programme: "Chinois (1 an)", langue: "Chinois", duree: "1 an", scolarite: 26000, dortoir: 8000, vie: 1800, selectivite: 1, moyenneMin: 8, verifie: "nov. 2026", source: "https://oec.xmu.edu.cn/en/Program1/Chinese_Language_Programs.htm" },
 ];
 
 // -----------------------------------------------------
