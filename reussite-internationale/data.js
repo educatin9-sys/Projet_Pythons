@@ -3,7 +3,8 @@
 // =====================================================
 
 // Coordonnées (numéro WhatsApp au format international, sans + ni espaces)
-const WHATSAPP_NUMERO = "2250000000000";
+const WHATSAPP_NUMERO = "8617822243713";
+const WHATSAPP_AFFICHE = "+86 178 2224 3713";
 const EMAIL_CONTACT = "contact@reussite-internationale.com";
 
 // Taux de conversion utilisé pour les estimations (à revérifier régulièrement)

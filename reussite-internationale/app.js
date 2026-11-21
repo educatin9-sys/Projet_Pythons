@@ -33,7 +33,7 @@ $("#tranches").innerHTML = PACK.tranches
   .map((t, i) => `<li><span class="num">${i + 1}</span><div><b>${fcfa(t.montant)} FCFA</b><span class="q">${t.quand}</span></div><span class="pct">${Math.round((t.montant / PACK.total) * 100)} %</span></li>`)
   .join("");
 
-const numeroAffiche = "+" + WHATSAPP_NUMERO;
+const numeroAffiche = WHATSAPP_AFFICHE;
 $("#foot-wa").textContent = numeroAffiche;
 $("#foot-mail").textContent = EMAIL_CONTACT;
 $("#wa-float").href = waLink("Bonjour Réussite Internationale, je souhaite étudier en Chine.");
