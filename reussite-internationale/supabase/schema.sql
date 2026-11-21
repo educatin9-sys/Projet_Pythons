@@ -63,6 +63,10 @@ create policy "admins gerent les dossiers" on public.dossiers
   using (public.est_admin())
   with check (public.est_admin());
 
+-- Droits de base pour les comptes connectés (la règle RLS ci-dessus filtre : administrateurs seulement)
+grant select, insert, update, delete on public.dossiers to authenticated;
+revoke all on public.dossiers from anon;
+
 -- Lecture d'UN dossier par son code, pour l'espace élève
 create or replace function public.dossier_eleve(p_code text) returns json
 language sql stable security definer set search_path = public as $$
