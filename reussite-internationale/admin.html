@@ -4,6 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Espace agence · Réussite Internationale</title>
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<meta name="theme-color" content="#0f1e45">
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -46,6 +51,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .wrap { max-width: 1200px; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); padding-block: 0 64px; }
 .top { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-block: 20px; margin-bottom: 28px; border-bottom: 1px solid var(--line); }
 .brand { display: flex; align-items: center; gap: 12px; }
+.login-logo { height: 54px; width: auto; justify-self: start; }
+.top-logo { height: 44px; width: auto; display: block; }
 .mark { width: 38px; height: 38px; border-radius: 8px; background: var(--navy); color: var(--on-navy); display: grid; place-items: center; font-weight: 700; font-size: .95rem; letter-spacing: .02em; flex: none; }
 .brand h1 { font-size: 1.15rem; }
 .brand p { margin: 0; color: var(--muted); font-size: .85rem; }
@@ -197,7 +204,7 @@ label.f, div.f { display: grid; gap: 6px; font-weight: 500; font-size: .86rem; c
 
 <section class="login" id="login" hidden>
   <form class="login-card" id="login-form" novalidate>
-    <span class="mark">RI</span>
+    <img class="login-logo" src="img/logo.png" width="543" height="180" alt="Réussite Internationale">
     <h1>Espace agence</h1>
     <p>Connectez-vous avec votre adresse e-mail et votre mot de passe.</p>
     <label class="f" for="l-email">Adresse e-mail<input id="l-email" type="email" autocomplete="username" required></label>
@@ -209,7 +216,7 @@ label.f, div.f { display: grid; gap: 6px; font-weight: 500; font-size: .86rem; c
     <p class="help">Seuls les comptes autorisés par l'agence peuvent se connecter.</p>
   </form>
   <form class="login-card" id="pw-form" hidden novalidate>
-    <span class="mark">RI</span>
+    <img class="login-logo" src="img/logo.png" width="543" height="180" alt="Réussite Internationale">
     <h1>Choisir mon mot de passe</h1>
     <p>Au moins 8 caractères. Vous l'utiliserez à chaque connexion.</p>
     <label class="f" for="p-1">Nouveau mot de passe<input id="p-1" type="password" autocomplete="new-password" minlength="8" required></label>
@@ -223,7 +230,7 @@ label.f, div.f { display: grid; gap: 6px; font-weight: 500; font-size: .86rem; c
 <div class="wrap" id="app" hidden>
   <header class="top">
     <div class="brand">
-      <span class="mark">RI</span>
+      <img class="top-logo" src="img/logo.png" width="543" height="180" alt="Réussite Internationale">
       <div><h1>Espace agence</h1><p>Réussite Internationale · gestion des élèves et des dossiers</p></div>
     </div>
     <div class="actions">

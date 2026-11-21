@@ -1,0 +1,12 @@
+{
+  "name": "Réussite Internationale",
+  "short_name": "Réussite Int.",
+  "icons": [
+    { "src": "img/icone-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "img/icone-512.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0f1e45"
+}
