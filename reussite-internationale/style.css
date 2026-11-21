@@ -620,3 +620,23 @@ select:focus, input:focus, textarea:focus { outline: none; border-color: var(--r
   .motion .float-chip { opacity: 1; }
   .mo-barre i { width: 75%; }
 }
+
+/* ===== Espace élève : affichage téléphone ===== */
+@media (max-width: 760px) {
+  .esp-banner { padding-block: 22px 26px; }
+  .esp-banner-inner { display: grid; grid-template-columns: auto 1fr; grid-template-areas: "avatar out" "hello hello"; gap: 16px 12px; align-items: center; }
+  .esp-avatar { grid-area: avatar; width: 76px; height: 76px; }
+  .esp-out { grid-area: out; justify-self: end; align-self: center; order: 0; padding: .5em .9em; font-size: .85rem; }
+  .esp-hello { grid-area: hello; }
+  .esp-hello h1 { font-size: 1.9rem; }
+  .esp-kicker { font-size: .78rem; }
+  .esp-chips span { white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+  .esp { padding-block: 18px 90px; gap: 14px; }
+  .esp-card { padding: 18px; border-radius: 16px; }
+  .esp-progress { align-items: center; }
+  .esp-card h2 { font-size: 1.2rem; }
+  .esp-todo-txt { font-size: 1.05rem; }
+  .btn-wa { align-self: stretch; justify-content: center; }
+  .esp-pay li { padding: 10px 12px; }
+  .esp-pay-total { flex-wrap: wrap; }
+}
