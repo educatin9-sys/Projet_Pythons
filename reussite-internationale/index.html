@@ -2,327 +2,426 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Réussite Internationale — Étudier en Chine</title>
-  <meta name="description" content="Réussite Internationale accompagne les étudiants vers les universités chinoises : choix de l'université, dossier, admission, visa et accueil en Chine.">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Réussite Internationale</title>
+  <meta name="description" content="Réussite Internationale accompagne les étudiants vers les universités chinoises : simulateur d'universités, suivi de dossier, guide et inscription.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+<!-- Icônes -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m20 20-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-track" viewBox="0 0 24 24"><path d="M4 12h4l3-7 4 14 3-7h2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2V5Z M4 19a2 2 0 0 1 2-2h13" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+  <symbol id="i-pen" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4Z M13 7l4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+  <symbol id="i-cap" viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5L2 9Z M6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6V3Z M14 3v5h5 M9 13h7 M9 17h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+  <symbol id="i-pass" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="10" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9 17h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-plane" viewBox="0 0 24 24"><path d="M2 16l20-8-3 10-6-2-3 4v-5l9-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+  <symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v10 M9 9.5c0-1 1.3-1.5 3-1.5s3 .7 3 2-1.3 1.7-3 2-3 .8-3 2 1.3 2 3 2 3-.5 3-1.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 5 5 9-10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14 M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</svg>
+
 <header class="topbar">
-  <div class="container topbar-inner">
-    <a href="#accueil" class="logo">
+  <div class="wrap topbar-inner">
+    <a href="#accueil" class="logo" data-link>
       <span class="logo-mark">RI</span>
-      <span class="logo-text">Réussite <strong>Internationale</strong></span>
+      <span class="logo-text">Réussite<br><strong>Internationale</strong></span>
     </a>
-    <button class="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
-      <span></span><span></span><span></span>
-    </button>
-    <nav class="nav">
-      <a href="#services">Services</a>
-      <a href="#etapes">Étapes</a>
-      <a href="#universites">Universités</a>
-      <a href="#tarifs">Tarifs</a>
-      <a href="#faq">FAQ</a>
-      <a href="#inscription" class="btn btn-small">S'inscrire</a>
+    <nav class="nav" aria-label="Navigation principale">
+      <a href="#accueil" data-link>Accueil</a>
+      <a href="#simulateur" data-link>Simulateur</a>
+      <a href="#suivi" data-link>Mon dossier</a>
+      <a href="#guide" data-link>Guide</a>
+      <a href="#inscription" class="btn btn-sm" data-link>S'inscrire</a>
     </nav>
   </div>
 </header>
 
 <main>
 
-  <!-- ACCUEIL -->
-  <section id="accueil" class="hero">
-    <div class="container hero-inner">
+<!-- ================= ACCUEIL ================= -->
+<section class="view" data-view="accueil">
+  <div class="hero">
+    <div class="wrap hero-inner">
       <div class="hero-text">
-        <p class="eyebrow">Agence d'études en Chine</p>
-        <h1>Votre place dans une université chinoise, du dossier jusqu'à l'arrivée.</h1>
-        <p class="lead">Réussite Internationale s'occupe de tout : choix de l'université, dossier d'admission, visa étudiant et accueil sur place. Vous vous concentrez sur vos études.</p>
+        <span class="pill">Études en Chine · Licence · Master · Langue</span>
+        <h1>Étudiez en Chine.<br><span class="hl">On s'occupe du reste.</span></h1>
+        <p class="lead">Choix de l'université, dossier, visa et accueil à l'aéroport : Réussite Internationale vous accompagne à chaque étape, en toute transparence.</p>
         <div class="hero-actions">
-          <a href="#inscription" class="btn">Je m'inscris</a>
-          <a href="#etapes" class="btn btn-ghost">Comment ça marche</a>
+          <a href="#simulateur" class="btn btn-lg" data-link>Trouver mon université <svg class="ic"><use href="#i-arrow"/></svg></a>
+          <a href="#inscription" class="btn btn-lg btn-light" data-link>Diagnostic gratuit</a>
         </div>
-        <ul class="hero-points">
-          <li>Licence, Master, Doctorat</li>
-          <li>Cours en anglais ou en chinois</li>
-          <li>Accueil à l'aéroport</li>
-        </ul>
       </div>
-      <div class="hero-card" aria-hidden="true">
-        <div class="ticket">
-          <div class="ticket-row">
-            <div><small>Départ</small><strong>Votre pays</strong></div>
-            <div class="plane">✈</div>
-            <div><small>Arrivée</small><strong>Chine</strong></div>
+      <div class="hero-visual" aria-hidden="true">
+        <div class="boarding">
+          <div class="boarding-top">
+            <div><small>De</small><b>Abidjan</b></div>
+            <svg class="ic ic-lg"><use href="#i-plane"/></svg>
+            <div class="right"><small>Vers</small><b>Nanjing</b></div>
           </div>
-          <div class="ticket-sep"></div>
-          <div class="ticket-steps">
-            <span class="done">Diagnostic</span>
-            <span class="done">Dossier</span>
-            <span class="done">Admission</span>
-            <span class="done">Visa X1</span>
-            <span>Accueil</span>
+          <div class="boarding-body">
+            <div class="mini-progress"><span style="width:80%"></span></div>
+            <p><b>Étape 4 / 5</b> · Visa X1 en cours</p>
+            <ul>
+              <li class="ok">Admission Notice reçue</li>
+              <li class="ok">JW202 reçu</li>
+              <li>Visa X1</li>
+            </ul>
           </div>
-          <div class="ticket-foot">Étudiant · Réussite Internationale</div>
+          <div class="boarding-foot">Exemple de suivi de dossier</div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap quick">
+    <a href="#simulateur" class="quick-card" data-link>
+      <span class="quick-ic red"><svg class="ic"><use href="#i-search"/></svg></span>
+      <h3>Simulateur d'universités</h3>
+      <p>Répondez à 6 questions et voyez les universités qui peuvent vous accepter, avec le coût par mois.</p>
+      <span class="more">Lancer <svg class="ic"><use href="#i-arrow"/></svg></span>
+    </a>
+    <a href="#suivi" class="quick-card" data-link>
+      <span class="quick-ic navy"><svg class="ic"><use href="#i-track"/></svg></span>
+      <h3>Suivre mon dossier</h3>
+      <p>Entrez votre code de dossier pour voir où vous en êtes et ce qu'il reste à faire.</p>
+      <span class="more">Suivre <svg class="ic"><use href="#i-arrow"/></svg></span>
+    </a>
+    <a href="#guide" class="quick-card" data-link>
+      <span class="quick-ic gold"><svg class="ic"><use href="#i-book"/></svg></span>
+      <h3>Guide pour débutants</h3>
+      <p>Visa, budget mensuel, bourses, documents : tout expliqué simplement.</p>
+      <span class="more">Lire <svg class="ic"><use href="#i-arrow"/></svg></span>
+    </a>
+  </div>
+
+  <section class="block">
+    <div class="wrap">
+      <h2 class="title">Votre parcours en 5 étapes</h2>
+      <p class="subtitle">De votre premier message jusqu'à votre installation en Chine.</p>
+      <ol class="timeline" id="timeline-accueil"></ol>
+    </div>
+  </section>
+
+  <section class="block block-soft">
+    <div class="wrap">
+      <h2 class="title">Ce qui est inclus</h2>
+      <div class="features">
+        <div class="feature"><svg class="ic"><use href="#i-cap"/></svg><div><h3>Orientation</h3><p>3 universités choisies selon vos notes et votre budget.</p></div></div>
+        <div class="feature"><svg class="ic"><use href="#i-doc"/></svg><div><h3>Dossier complet</h3><p>Traductions, lettre de motivation, recommandations, dépôt officiel.</p></div></div>
+        <div class="feature"><svg class="ic"><use href="#i-pass"/></svg><div><h3>Visa étudiant</h3><p>JW202 et visa X1 : on prépare tout avec vous.</p></div></div>
+        <div class="feature"><svg class="ic"><use href="#i-plane"/></svg><div><h3>Accueil en Chine</h3><p>Aéroport, dortoir, banque, carte SIM, WeChat Pay.</p></div></div>
       </div>
     </div>
   </section>
 
-  <!-- SERVICES -->
-  <section id="services" class="section">
-    <div class="container">
-      <p class="eyebrow">Ce que nous faisons</p>
-      <h2>Un accompagnement clé en main</h2>
-      <div class="grid grid-3">
-        <article class="card">
-          <div class="card-icon">🎓</div>
-          <h3>Orientation</h3>
-          <p>On étudie votre bac, vos notes et votre budget, puis on choisit avec vous 3 universités adaptées.</p>
-        </article>
-        <article class="card">
-          <div class="card-icon">📄</div>
-          <h3>Dossier d'admission</h3>
-          <p>Traductions, lettre de motivation (Study Plan), recommandations et dépôt sur les portails officiels.</p>
-        </article>
-        <article class="card">
-          <div class="card-icon">🛂</div>
-          <h3>Visa étudiant</h3>
-          <p>Admission Notice, formulaire JW202 et demande du visa X1 : on vous guide à chaque étape.</p>
-        </article>
-        <article class="card">
-          <div class="card-icon">🏅</div>
-          <h3>Bourses</h3>
-          <p>On vous aide à postuler aux bourses quand vous y avez droit (bourse CSC, bourses des universités).</p>
-        </article>
-        <article class="card">
-          <div class="card-icon">🛬</div>
-          <h3>Accueil en Chine</h3>
-          <p>Aéroport, dortoir, compte bancaire, carte SIM, WeChat Pay / Alipay et permis de séjour.</p>
-        </article>
-        <article class="card">
-          <div class="card-icon">🤝</div>
-          <h3>Suivi des parents</h3>
-          <p>Les parents sont informés à chaque étape. Un contrat clair est signé avant tout paiement.</p>
-        </article>
+  <section class="block" id="tarifs">
+    <div class="wrap">
+      <h2 class="title">Un seul prix, payé en 3 fois</h2>
+      <p class="subtitle">Vous payez seulement quand on avance.</p>
+      <div class="price">
+        <div class="price-card">
+          <span class="price-label">Pack clé en main</span>
+          <p class="price-big"><span id="pack-total"></span> <small>FCFA</small></p>
+          <p class="price-muted">par étudiant</p>
+          <a href="#inscription" class="btn btn-white" data-link>Commencer</a>
+        </div>
+        <ol class="tranches" id="tranches"></ol>
+      </div>
+      <p class="info"><svg class="ic"><use href="#i-coin"/></svg><span>La scolarité et le dortoir sont payés <b>directement à l'université</b> par la famille. Les remboursements (pas d'admission, visa refusé) sont écrits dans le contrat.</span></p>
+    </div>
+  </section>
+
+  <section class="block block-soft">
+    <div class="wrap narrow">
+      <h2 class="title">Questions fréquentes</h2>
+      <div class="faq">
+        <details><summary>Faut-il parler chinois ?</summary><p>Non. Beaucoup de formations sont en anglais. Vous pouvez aussi commencer par une année de langue chinoise.</p></details>
+        <details><summary>Combien de temps dure la procédure ?</summary><p>En général 1 à 3 mois entre le diagnostic et le visa, selon les universités.</p></details>
+        <details><summary>À qui paie-t-on la scolarité ?</summary><p>Directement à l'université. Nous ne touchons jamais aux frais de scolarité ni de dortoir.</p></details>
+        <details><summary>Et si je ne suis admis nulle part ?</summary><p>La 2e tranche est remboursée. Si le visa est refusé, la 3e tranche est remboursée.</p></details>
       </div>
     </div>
   </section>
 
-  <!-- ETAPES -->
-  <section id="etapes" class="section section-alt">
-    <div class="container">
-      <p class="eyebrow">Le parcours</p>
-      <h2>5 étapes jusqu'en Chine</h2>
-      <ol class="steps">
-        <li>
-          <span class="step-num">1</span>
-          <div><h3>Diagnostic</h3><p>Un entretien d'environ 30 min : série du bac, notes, niveau d'anglais, budget et passeport.</p></div>
-        </li>
-        <li>
-          <span class="step-num">2</span>
-          <div><h3>3 vœux</h3><p>Une université ambitieuse, une équilibrée et une sûre, pour maximiser vos chances.</p></div>
-        </li>
-        <li>
-          <span class="step-num">3</span>
-          <div><h3>Dossier</h3><p>1 à 2 semaines pour préparer et déposer le dossier complet.</p></div>
-        </li>
-        <li>
-          <span class="step-num">4</span>
-          <div><h3>Admission et visa</h3><p>Réception de l'Admission Notice et du JW202, puis demande du visa X1.</p></div>
-        </li>
-        <li>
-          <span class="step-num">5</span>
-          <div><h3>Accueil</h3><p>On vous accueille à l'arrivée et on vous aide à vous installer.</p></div>
-        </li>
-      </ol>
+  <section class="cta">
+    <div class="wrap cta-inner">
+      <div><h2>Prêt à partir ?</h2><p>Le diagnostic est gratuit et sans engagement.</p></div>
+      <a href="#inscription" class="btn btn-lg btn-white" data-link>Je m'inscris</a>
     </div>
   </section>
+</section>
 
-  <!-- UNIVERSITES -->
-  <section id="universites" class="section">
-    <div class="container">
-      <p class="eyebrow">Exemples</p>
-      <h2>Quelques universités partenaires possibles</h2>
-      <p class="section-intro">Exemple en aéronautique, licence enseignée en anglais. Les frais sont indicatifs et vérifiés sur le site officiel avant chaque dossier.</p>
-      <div class="grid grid-4">
-        <article class="uni">
-          <span class="tag tag-safe">Vœu sûr</span>
-          <h3>Shenyang Aerospace University</h3>
-          <p class="uni-city">Shenyang</p>
-          <p class="uni-price">≈ 18 000 RMB / an</p>
-        </article>
-        <article class="uni">
-          <span class="tag tag-mid">Vœu équilibre</span>
-          <h3>NUAA</h3>
-          <p class="uni-city">Nanjing</p>
-          <p class="uni-price">≈ 23 900 RMB / an</p>
-        </article>
-        <article class="uni">
-          <span class="tag tag-high">Vœu ambitieux</span>
-          <h3>NPU</h3>
-          <p class="uni-city">Xi'an</p>
-          <p class="uni-price">≈ 22 000 RMB / an</p>
-        </article>
-        <article class="uni">
-          <span class="tag tag-high">Très sélective</span>
-          <h3>Beihang University</h3>
-          <p class="uni-city">Pékin</p>
-          <p class="uni-price">≈ 30 000 RMB / an</p>
-        </article>
+<!-- ================= SIMULATEUR ================= -->
+<section class="view" data-view="simulateur" hidden>
+  <div class="page-head">
+    <div class="wrap">
+      <span class="pill">Simulateur</span>
+      <h1>Quelles universités peuvent m'accepter ?</h1>
+      <p class="lead">6 questions, 1 minute. Les résultats sont indicatifs : un conseiller confirme tout lors du diagnostic.</p>
+    </div>
+  </div>
+
+  <div class="wrap sim">
+    <form id="sim-form" class="panel sim-form">
+      <div class="q">
+        <span class="q-label"><b>1</b> Quel niveau visez-vous ?</span>
+        <div class="choices" data-name="niveau">
+          <button type="button" class="choice active" data-value="Licence">Licence</button>
+          <button type="button" class="choice" data-value="Master">Master</button>
+          <button type="button" class="choice" data-value="Année de langue">Année de langue</button>
+        </div>
       </div>
-      <p class="note">D'autres domaines sont possibles : médecine, ingénierie, informatique, commerce, langue chinoise…</p>
-    </div>
-  </section>
-
-  <!-- TARIFS -->
-  <section id="tarifs" class="section section-alt">
-    <div class="container">
-      <p class="eyebrow">Tarifs</p>
-      <h2>Un pack unique, payé en 3 fois</h2>
-      <div class="pricing">
-        <div class="price-main">
-          <p class="price-label">Pack clé en main</p>
-          <p class="price-value">1 500 000 <span>FCFA</span></p>
-          <p class="price-sub">par étudiant</p>
-          <a href="#inscription" class="btn">Commencer mon inscription</a>
+      <div class="q">
+        <span class="q-label"><b>2</b> Quel domaine ?</span>
+        <div class="choices" data-name="domaine">
+          <button type="button" class="choice active" data-value="Tous">Peu importe</button>
+          <button type="button" class="choice" data-value="Médecine">Médecine</button>
+          <button type="button" class="choice" data-value="Aéronautique">Aéronautique</button>
+          <button type="button" class="choice" data-value="Informatique et génie">Informatique et génie</button>
+          <button type="button" class="choice" data-value="Commerce et gestion">Commerce et gestion</button>
+          <button type="button" class="choice" data-value="Langue chinoise">Langue chinoise</button>
         </div>
-        <ul class="tranches">
-          <li><strong>500 000 FCFA</strong><span>À la signature du contrat</span></li>
-          <li><strong>700 000 FCFA</strong><span>À l'admission + JW202</span></li>
-          <li><strong>300 000 FCFA</strong><span>Au visa X1, avant le vol</span></li>
-        </ul>
       </div>
-      <p class="note">La scolarité et le dortoir sont payés <strong>directement à l'université</strong> par la famille. Notre pack couvre uniquement notre accompagnement. Les conditions de remboursement sont écrites dans le contrat.</p>
-    </div>
-  </section>
-
-  <!-- FAQ -->
-  <section id="faq" class="section">
-    <div class="container container-narrow">
-      <p class="eyebrow">Questions fréquentes</p>
-      <h2>Vous vous demandez peut-être…</h2>
-      <details>
-        <summary>Faut-il parler chinois ?</summary>
-        <p>Non. Beaucoup de programmes sont enseignés en anglais. Vous pouvez aussi faire une année de langue chinoise avant votre formation.</p>
-      </details>
-      <details>
-        <summary>Combien de temps dure la procédure ?</summary>
-        <p>Comptez en général 1 à 3 mois entre le diagnostic et le visa, selon les universités et les périodes d'inscription.</p>
-      </details>
-      <details>
-        <summary>À qui paie-t-on la scolarité ?</summary>
-        <p>Directement à l'université. Nous ne touchons jamais aux frais de scolarité ni de dortoir.</p>
-      </details>
-      <details>
-        <summary>Et si je ne suis admis nulle part ?</summary>
-        <p>La 2e tranche vous est remboursée. Si le visa est refusé, la 3e tranche est remboursée. Tout est écrit dans le contrat.</p>
-      </details>
-      <details>
-        <summary>Peut-on avoir une bourse ?</summary>
-        <p>Oui, selon votre profil et votre âge. Nous vous indiquons les bourses accessibles dès le diagnostic.</p>
-      </details>
-    </div>
-  </section>
-
-  <!-- INSCRIPTION -->
-  <section id="inscription" class="section section-dark">
-    <div class="container inscription">
-      <div class="inscription-text">
-        <p class="eyebrow eyebrow-light">Inscription</p>
-        <h2>Réservez votre diagnostic gratuit</h2>
-        <p>Remplissez ce formulaire. Il s'envoie sur notre WhatsApp et un conseiller vous recontacte rapidement.</p>
-        <ul class="check">
-          <li>Sans engagement</li>
-          <li>Réponse rapide sur WhatsApp</li>
-          <li>Les parents peuvent remplir pour leur enfant</li>
-        </ul>
+      <div class="q">
+        <label class="q-label" for="sim-moyenne"><b>3</b> Votre moyenne au bac (ou au dernier diplôme)</label>
+        <div class="range">
+          <input type="range" id="sim-moyenne" min="8" max="20" step="0.5" value="12">
+          <output id="sim-moyenne-out">12 / 20</output>
+        </div>
       </div>
+      <div class="q">
+        <span class="q-label"><b>4</b> Votre niveau d'anglais</span>
+        <div class="choices" data-name="anglais">
+          <button type="button" class="choice" data-value="1">Débutant</button>
+          <button type="button" class="choice active" data-value="2">Moyen</button>
+          <button type="button" class="choice" data-value="3">Bon</button>
+        </div>
+      </div>
+      <div class="q">
+        <label class="q-label" for="sim-budget"><b>5</b> Budget de la famille par an (scolarité + logement)</label>
+        <select id="sim-budget">
+          <option value="2000000">Jusqu'à 2 000 000 FCFA</option>
+          <option value="2500000">Jusqu'à 2 500 000 FCFA</option>
+          <option value="3000000" selected>Jusqu'à 3 000 000 FCFA</option>
+          <option value="4000000">Jusqu'à 4 000 000 FCFA</option>
+          <option value="99000000">Plus de 4 000 000 FCFA</option>
+        </select>
+      </div>
+      <div class="q">
+        <label class="q-label" for="sim-age"><b>6</b> Votre âge</label>
+        <input type="number" id="sim-age" min="15" max="45" value="19" inputmode="numeric">
+      </div>
+      <button type="submit" class="btn btn-lg btn-full">Voir mes universités <svg class="ic"><use href="#i-search"/></svg></button>
+    </form>
 
-      <form id="form-inscription" class="form" novalidate>
-        <div class="form-row">
-          <label>Nom *<input name="nom" required autocomplete="family-name"></label>
-          <label>Prénom *<input name="prenom" required autocomplete="given-name"></label>
-        </div>
-        <div class="form-row">
-          <label>Téléphone WhatsApp *<input name="telephone" type="tel" required placeholder="+225 07 00 00 00 00" autocomplete="tel"></label>
-          <label>E-mail<input name="email" type="email" autocomplete="email"></label>
-        </div>
-        <div class="form-row">
-          <label>Pays *<input name="pays" required autocomplete="country-name"></label>
-          <label>Ville<input name="ville" autocomplete="address-level2"></label>
-        </div>
-        <div class="form-row">
-          <label>Niveau visé *
-            <select name="niveau" required>
-              <option value="">Choisir…</option>
-              <option>Licence</option>
-              <option>Master</option>
-              <option>Doctorat</option>
-              <option>Année de langue chinoise</option>
-            </select>
-          </label>
-          <label>Série du bac / dernier diplôme<input name="diplome" placeholder="Ex. Bac D, Licence en…"></label>
-        </div>
-        <div class="form-row">
-          <label>Domaine souhaité<input name="domaine" placeholder="Ex. Aéronautique, Médecine…"></label>
-          <label>Passeport
-            <select name="passeport">
-              <option value="">Choisir…</option>
-              <option>Oui, valide</option>
-              <option>En cours</option>
-              <option>Non</option>
-            </select>
-          </label>
-        </div>
-        <label>Vous êtes
-          <select name="profil">
-            <option>L'étudiant(e)</option>
-            <option>Un parent</option>
+    <div class="sim-results" id="sim-results" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ================= SUIVI ================= -->
+<section class="view" data-view="suivi" hidden>
+  <div class="page-head">
+    <div class="wrap">
+      <span class="pill">Mon dossier</span>
+      <h1>Où en est mon dossier ?</h1>
+      <p class="lead">Entrez le code reçu à la signature de votre contrat.</p>
+    </div>
+  </div>
+  <div class="wrap narrow">
+    <form id="suivi-form" class="panel suivi-form">
+      <label for="suivi-code" class="q-label">Code de dossier</label>
+      <div class="suivi-row">
+        <input id="suivi-code" placeholder="Ex. RI-DEMO-1" autocomplete="off" autocapitalize="characters">
+        <button type="submit" class="btn">Voir</button>
+      </div>
+      <p class="hint">Démonstration : essayez <button type="button" class="link-btn" data-demo="RI-DEMO-1">RI-DEMO-1</button>, <button type="button" class="link-btn" data-demo="RI-DEMO-2">RI-DEMO-2</button> ou <button type="button" class="link-btn" data-demo="RI-DEMO-3">RI-DEMO-3</button></p>
+    </form>
+    <div id="suivi-result" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ================= GUIDE ================= -->
+<section class="view" data-view="guide" hidden>
+  <div class="page-head">
+    <div class="wrap">
+      <span class="pill">Guide</span>
+      <h1>Partir étudier en Chine, expliqué simplement</h1>
+      <p class="lead">Les réponses aux questions que tout le monde se pose avant de partir.</p>
+    </div>
+  </div>
+  <div class="wrap guide">
+    <article class="guide-card">
+      <span class="quick-ic red"><svg class="ic"><use href="#i-coin"/></svg></span>
+      <h3>Combien ça coûte par mois ?</h3>
+      <p>Il faut compter 3 choses :</p>
+      <ul class="dots">
+        <li><b>Scolarité</b> : de 16 000 à 40 000 RMB par an selon l'université.</li>
+        <li><b>Dortoir</b> : de 4 000 à 12 000 RMB par an.</li>
+        <li><b>Vie quotidienne</b> : environ 1 500 RMB par mois (plus à Pékin et Shanghai).</li>
+      </ul>
+      <p class="muted">1 RMB ≈ 86 FCFA. Le simulateur fait le calcul pour vous.</p>
+      <a href="#simulateur" class="more" data-link>Calculer mon budget <svg class="ic"><use href="#i-arrow"/></svg></a>
+    </article>
+    <article class="guide-card">
+      <span class="quick-ic navy"><svg class="ic"><use href="#i-doc"/></svg></span>
+      <h3>Les documents à préparer</h3>
+      <ul class="checklist">
+        <li>Passeport valide (au moins 1 an)</li>
+        <li>Diplôme et relevés de notes du bac</li>
+        <li>Photos d'identité fond blanc</li>
+        <li>Certificat médical (formulaire chinois)</li>
+        <li>Casier judiciaire</li>
+        <li>Lettre de motivation (Study Plan)</li>
+        <li>2 lettres de recommandation</li>
+        <li>Certificat d'anglais (si vous en avez un)</li>
+      </ul>
+    </article>
+    <article class="guide-card">
+      <span class="quick-ic gold"><svg class="ic"><use href="#i-pass"/></svg></span>
+      <h3>Admission Notice, JW202, visa X1 : c'est quoi ?</h3>
+      <dl class="glossary">
+        <dt>Admission Notice</dt><dd>La lettre officielle de l'université qui dit que vous êtes admis.</dd>
+        <dt>JW202</dt><dd>Le formulaire du gouvernement chinois qui permet de demander le visa étudiant.</dd>
+        <dt>Visa X1</dt><dd>Le visa pour les études de plus de 6 mois. À l'arrivée, il est remplacé par un permis de séjour.</dd>
+      </dl>
+    </article>
+    <article class="guide-card">
+      <span class="quick-ic red"><svg class="ic"><use href="#i-cap"/></svg></span>
+      <h3>Les bourses</h3>
+      <p>La <b>bourse du gouvernement chinois (CSC)</b> peut couvrir la scolarité, le logement et une allocation mensuelle.</p>
+      <ul class="dots">
+        <li>Licence : avoir moins de 25 ans</li>
+        <li>Test CSCA obligatoire en licence depuis 2026/2027</li>
+        <li>Dossier sur campuschina.org (gratuit)</li>
+      </ul>
+      <p class="muted">Les universités ont aussi leurs propres bourses. On vous dit lesquelles sont possibles pendant le diagnostic.</p>
+    </article>
+    <article class="guide-card">
+      <span class="quick-ic navy"><svg class="ic"><use href="#i-plane"/></svg></span>
+      <h3>La vie en Chine</h3>
+      <ul class="dots">
+        <li><b>WeChat</b> et <b>Alipay</b> servent à tout : messages et paiements.</li>
+        <li>Une <b>carte SIM chinoise</b> et un <b>compte bancaire</b> sont ouverts à l'arrivée.</li>
+        <li>Les dortoirs sont sur le campus, souvent en chambre double.</li>
+        <li>Prévoyez des vêtements chauds : l'hiver est froid dans le nord.</li>
+      </ul>
+    </article>
+    <article class="guide-card">
+      <span class="quick-ic gold"><svg class="ic"><use href="#i-track"/></svg></span>
+      <h3>Le calendrier</h3>
+      <ul class="dots">
+        <li><b>Rentrée principale</b> : septembre</li>
+        <li><b>Candidatures</b> : de novembre à mai environ</li>
+        <li><b>Rentrée de mars</b> : possible dans certaines universités</li>
+      </ul>
+      <p class="muted">Plus vous commencez tôt, plus vous avez de choix.</p>
+    </article>
+  </div>
+</section>
+
+<!-- ================= INSCRIPTION ================= -->
+<section class="view" data-view="inscription" hidden>
+  <div class="page-head">
+    <div class="wrap">
+      <span class="pill">Inscription</span>
+      <h1>Réservez votre diagnostic gratuit</h1>
+      <p class="lead">Le formulaire s'envoie sur notre WhatsApp. Un conseiller vous répond rapidement.</p>
+    </div>
+  </div>
+  <div class="wrap narrow">
+    <form id="form-inscription" class="panel form" novalidate>
+      <div class="chosen" id="chosen-uni" hidden></div>
+      <div class="row">
+        <label for="f-nom">Nom *<input id="f-nom" name="nom" required autocomplete="family-name"></label>
+        <label for="f-prenom">Prénom *<input id="f-prenom" name="prenom" required autocomplete="given-name"></label>
+      </div>
+      <div class="row">
+        <label for="f-tel">Téléphone WhatsApp *<input id="f-tel" name="telephone" type="tel" required placeholder="+225 07 00 00 00 00" autocomplete="tel"></label>
+        <label for="f-email">E-mail<input id="f-email" name="email" type="email" autocomplete="email"></label>
+      </div>
+      <div class="row">
+        <label for="f-pays">Pays *<input id="f-pays" name="pays" required autocomplete="country-name"></label>
+        <label for="f-niveau">Niveau visé *
+          <select id="f-niveau" name="niveau" required>
+            <option value="">Choisir…</option>
+            <option>Licence</option>
+            <option>Master</option>
+            <option>Année de langue</option>
           </select>
         </label>
-        <label>Message<textarea name="message" rows="3" placeholder="Vos questions, votre budget…"></textarea></label>
-        <label class="consent"><input type="checkbox" name="consent" required> J'accepte d'être recontacté(e) par Réussite Internationale. *</label>
-        <p class="form-error" role="alert" hidden></p>
-        <button type="submit" class="btn btn-full">Envoyer mon inscription</button>
-        <p class="form-success" role="status" hidden>Merci ! WhatsApp s'est ouvert avec votre inscription : il ne reste plus qu'à appuyer sur « Envoyer ».</p>
-      </form>
-    </div>
-  </section>
+      </div>
+      <div class="row">
+        <label for="f-domaine">Domaine souhaité<input id="f-domaine" name="domaine" placeholder="Ex. Médecine, Aéronautique…"></label>
+        <label for="f-passeport">Passeport
+          <select id="f-passeport" name="passeport">
+            <option value="">Choisir…</option>
+            <option>Oui, valide</option>
+            <option>En cours</option>
+            <option>Non</option>
+          </select>
+        </label>
+      </div>
+      <label for="f-profil">Vous êtes
+        <select id="f-profil" name="profil">
+          <option>L'étudiant(e)</option>
+          <option>Un parent</option>
+        </select>
+      </label>
+      <label for="f-message">Message<textarea id="f-message" name="message" rows="3" placeholder="Vos questions, votre budget…"></textarea></label>
+      <input type="hidden" name="universite" id="f-universite">
+      <label class="consent" for="f-consent"><input id="f-consent" type="checkbox" name="consent" required> J'accepte d'être recontacté(e) par Réussite Internationale. *</label>
+      <p class="form-error" role="alert" hidden></p>
+      <button type="submit" class="btn btn-lg btn-full">Envoyer sur WhatsApp</button>
+      <div class="form-success" role="status" hidden></div>
+    </form>
+  </div>
+</section>
 
 </main>
 
 <footer class="footer">
-  <div class="container footer-inner">
+  <div class="wrap footer-inner">
     <div>
-      <a href="#accueil" class="logo logo-light">
-        <span class="logo-mark">RI</span>
-        <span class="logo-text">Réussite <strong>Internationale</strong></span>
-      </a>
+      <span class="logo logo-light"><span class="logo-mark">RI</span><span class="logo-text">Réussite<br><strong>Internationale</strong></span></span>
       <p>Agence d'accompagnement des étudiants vers les universités chinoises.</p>
     </div>
     <div>
       <h4>Contact</h4>
-      <p><a class="js-whatsapp" href="#">WhatsApp</a></p>
-      <p><a class="js-email" href="#">E-mail</a></p>
+      <p>WhatsApp : <span class="sel" id="foot-wa"></span></p>
+      <p>E-mail : <span class="sel" id="foot-mail"></span></p>
     </div>
     <div>
-      <h4>Liens</h4>
-      <p><a href="#services">Services</a></p>
-      <p><a href="#tarifs">Tarifs</a></p>
-      <p><a href="#inscription">Inscription</a></p>
+      <h4>Raccourcis</h4>
+      <p><a href="#simulateur" data-link>Simulateur</a></p>
+      <p><a href="#suivi" data-link>Mon dossier</a></p>
+      <p><a href="#guide" data-link>Guide</a></p>
     </div>
   </div>
-  <p class="copyright container">© <span id="annee"></span> Réussite Internationale. Tous droits réservés.</p>
+  <p class="wrap copyright">© <span id="annee"></span> Réussite Internationale</p>
 </footer>
 
-<a class="wa-float js-whatsapp" href="#" aria-label="Nous écrire sur WhatsApp">
+<!-- Barre d'onglets mobile -->
+<nav class="tabbar" aria-label="Navigation mobile">
+  <a href="#accueil" data-link><svg class="ic"><use href="#i-home"/></svg>Accueil</a>
+  <a href="#simulateur" data-link><svg class="ic"><use href="#i-search"/></svg>Simulateur</a>
+  <a href="#suivi" data-link><svg class="ic"><use href="#i-track"/></svg>Dossier</a>
+  <a href="#guide" data-link><svg class="ic"><use href="#i-book"/></svg>Guide</a>
+  <a href="#inscription" data-link><svg class="ic"><use href="#i-pen"/></svg>S'inscrire</a>
+</nav>
+
+<a class="wa-float" id="wa-float" href="#" target="_blank" rel="noopener" aria-label="Nous écrire sur WhatsApp">
   <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3a.5.5 0 0 0 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.3c0-.1-.2-.2-.5-.3Z"/></svg>
 </a>
 
-<script src="script.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
