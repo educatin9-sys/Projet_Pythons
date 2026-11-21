@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Réussite Internationale</title>
-  <meta name="description" content="Réussite Internationale accompagne les étudiants vers les universités chinoises : estimation de vos chances, suivi de dossier en ligne et guide pour étudier en Chine.">
+  <meta name="description" content="Réussite Internationale accompagne les étudiants vers les universités chinoises : simulation de budget, suivi de dossier en ligne et guide pour étudier en Chine.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -40,7 +40,7 @@
     </a>
     <nav class="nav" aria-label="Navigation principale">
       <a href="#accueil" data-link>Accueil</a>
-      <a href="#simulateur" data-link>Mes chances</a>
+      <a href="#simulateur" data-link>Mon budget</a>
       <a href="#guide" data-link>Guide</a>
       <a href="#suivi" class="btn btn-sm" data-link>Mon espace</a>
     </nav>
@@ -58,7 +58,7 @@
         <h1>Étudiez en Chine.<br><span class="hl">On s'occupe du reste.</span></h1>
         <p class="lead">Choix de l'université, dossier, visa et accueil à l'aéroport : Réussite Internationale vous accompagne à chaque étape, en toute transparence.</p>
         <div class="hero-actions">
-          <a href="#simulateur" class="btn btn-lg" data-link>Estimer mes chances <svg class="ic"><use href="#i-arrow"/></svg></a>
+          <a href="#simulateur" class="btn btn-lg" data-link>Simuler mon budget <svg class="ic"><use href="#i-arrow"/></svg></a>
           <a href="#suivi" class="btn btn-lg btn-light" data-link>Suivre mon dossier</a>
         </div>
       </div>
@@ -87,8 +87,8 @@
   <div class="wrap quick">
     <a href="#simulateur" class="quick-card" data-link>
       <span class="quick-ic red"><svg class="ic"><use href="#i-search"/></svg></span>
-      <h3>Estimer mes chances</h3>
-      <p>Répondez à 6 questions : vos chances d'admission et le budget moyen par an, en 1 minute.</p>
+      <h3>Simuler mon budget</h3>
+      <p>Choisissez votre formation : le budget moyen à prévoir par an, logement et vie compris.</p>
       <span class="more">Lancer <svg class="ic"><use href="#i-arrow"/></svg></span>
     </a>
     <a href="#suivi" class="quick-card" data-link>
@@ -175,9 +175,9 @@
 <section class="view" data-view="simulateur" hidden>
   <div class="page-head">
     <div class="wrap">
-      <span class="pill">Estimateur</span>
-      <h1>Quelles sont mes chances d'étudier en Chine ?</h1>
-      <p class="lead">Répondez à 6 questions. Vous obtenez une estimation de vos chances d'admission et du budget moyen à prévoir. Le choix des universités se fait ensuite avec votre conseiller.</p>
+      <span class="pill">Simulateur de budget</span>
+      <h1>Combien coûtent vos études en Chine ?</h1>
+      <p class="lead">Choisissez votre niveau et votre formation : vous obtenez le budget moyen à prévoir par an, logement et vie quotidienne compris. Votre conseiller vous propose ensuite l'université adaptée à ce budget.</p>
     </div>
   </div>
 
@@ -209,32 +209,14 @@
         </div>
       </div>
       <div class="q">
-        <label class="q-label" for="sim-moyenne"><b>3</b> Votre moyenne au bac (ou au dernier diplôme)</label>
-        <div class="range">
-          <input type="range" id="sim-moyenne" min="8" max="20" step="0.5" value="12">
-          <output id="sim-moyenne-out">12 / 20</output>
+        <span class="q-label"><b>3</b> Dans quel type de ville ?</span>
+        <div class="choices" data-name="ville">
+          <button type="button" class="choice active" data-value="Tous">Peu importe</button>
+          <button type="button" class="choice" data-value="grande">Grande ville <span class="q-hint">(Pékin, Shanghai, Canton)</span></button>
+          <button type="button" class="choice" data-value="autre">Autre ville <span class="q-hint">(moins chère)</span></button>
         </div>
       </div>
-      <div class="q">
-        <span class="q-label"><b>4</b> Votre niveau d'anglais</span>
-        <div class="choices" data-name="anglais">
-          <button type="button" class="choice" data-value="1">Débutant</button>
-          <button type="button" class="choice active" data-value="2">Moyen</button>
-          <button type="button" class="choice" data-value="3">Bon</button>
-        </div>
-      </div>
-      <div class="q">
-        <label class="q-label" for="sim-budget"><b>5</b> Budget de la famille par an <span class="q-hint">(scolarité + logement)</span></label>
-        <div class="range">
-          <input type="range" id="sim-budget" min="1000000" max="8000000" step="250000" value="3000000">
-          <output id="sim-budget-out">3 000 000 FCFA</output>
-        </div>
-      </div>
-      <div class="q">
-        <label class="q-label" for="sim-age"><b>6</b> Votre âge</label>
-        <input type="number" id="sim-age" min="15" max="45" value="19" inputmode="numeric">
-      </div>
-      <button type="submit" class="btn btn-lg btn-full">Voir mes chances <svg class="ic"><use href="#i-search"/></svg></button>
+      <button type="submit" class="btn btn-lg btn-full">Calculer mon budget <svg class="ic"><use href="#i-coin"/></svg></button>
     </form>
 
     <div class="sim-results" id="sim-results" aria-live="polite"></div>
@@ -371,7 +353,7 @@
     </div>
     <div>
       <h4>Raccourcis</h4>
-      <p><a href="#simulateur" data-link>Estimer mes chances</a></p>
+      <p><a href="#simulateur" data-link>Simuler mon budget</a></p>
       <p><a href="#suivi" data-link>Espace élève</a></p>
       <p><a href="#guide" data-link>Guide</a></p>
       <p><a id="lien-agence" href="#" target="_blank" rel="noopener" class="agence-link"><svg class="ic"><use href="#i-lock"/></svg> Espace agence</a></p>
@@ -383,7 +365,7 @@
 <!-- Barre d'onglets mobile -->
 <nav class="tabbar" aria-label="Navigation mobile">
   <a href="#accueil" data-link><svg class="ic"><use href="#i-home"/></svg>Accueil</a>
-  <a href="#simulateur" data-link><svg class="ic"><use href="#i-search"/></svg>Mes chances</a>
+  <a href="#simulateur" data-link><svg class="ic"><use href="#i-search"/></svg>Mon budget</a>
   <a href="#suivi" data-link><svg class="ic"><use href="#i-user"/></svg>Mon espace</a>
   <a href="#guide" data-link><svg class="ic"><use href="#i-book"/></svg>Guide</a>
   <a class="js-wa" href="#" target="_blank" rel="noopener"><svg class="ic"><use href="#i-chat"/></svg>WhatsApp</a>

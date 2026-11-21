@@ -45,10 +45,11 @@ $$(".js-wa").forEach((a) => (a.href = lienWa));
 $("#annee").textContent = new Date().getFullYear();
 $("#lien-agence").href = LIEN_ESPACE_AGENCE;
 
-/* ---------- Estimateur de chances ----------
+/* ---------- Simulateur de budget ----------
    La liste UNIVERSITES (data.js) sert seulement de base de calcul :
-   aucun nom d'université ni nombre d'universités n'est montré au visiteur. */
-const choix = { niveau: "Licence", domaine: "Tous", anglais: "2" };
+   aucun nom d'université n'est montré au visiteur. */
+const choix = { niveau: "Licence", domaine: "Tous", ville: "Tous" };
+const GRANDES_VILLES = ["Pékin", "Shanghai", "Canton", "Shenzhen"];
 
 $$(".choices").forEach((groupe) => {
   groupe.addEventListener("click", (e) => {
@@ -73,49 +74,25 @@ function majAutre() {
   if (!box.hidden) $("#sim-autre").focus();
 }
 
-const moyenneInput = $("#sim-moyenne");
-moyenneInput.addEventListener("input", () => ($("#sim-moyenne-out").textContent = `${moyenneInput.value.replace(".", ",")} / 20`));
-const budgetInput = $("#sim-budget");
-const budgetTexte = () => (+budgetInput.value >= 8000000 ? "8 000 000 FCFA et plus" : `${fcfa(+budgetInput.value)} FCFA`);
-budgetInput.addEventListener("input", () => ($("#sim-budget-out").textContent = budgetTexte()));
-
 const sansAccent = (t) => String(t).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
 const moyenneDe = (l) => l.reduce((s, x) => s + x, 0) / l.length;
+const arrondi = (n) => Math.round(n / 50000) * 50000;   // budgets arrondis à 50 000 FCFA
 
-// Probabilité d'être admis dans UNE formation, selon l'écart entre la moyenne et le niveau demandé
-function probaUne(u, moyenne, anglais) {
-  let ecart = moyenne - u.moyenneMin;
-  if (u.langue !== "Chinois") ecart += anglais === 1 ? -1.5 : anglais === 3 ? 0.5 : 0;
-  if (u.selectivite === 4) ecart -= 0.5;
-  return 1 / (1 + Math.exp(-0.9 * ecart));
-}
-
-// Paliers de coût : plus c'est cher, plus c'est prestigieux (jamais « mauvais »)
+// Paliers de budget : plus c'est cher, plus c'est prestigieux (jamais « mauvais »)
 function palier(coutFcfa) {
   if (coutFcfa <= 2200000) return { cls: "t-vert", emoji: "💚", label: "Budget accessible" };
   if (coutFcfa <= 3300000) return { cls: "t-jaune", emoji: "⭐", label: "Budget confort" };
   return { cls: "t-rouge", emoji: "👑", label: "Budget prestige" };
 }
-function niveauChance(p) {
-  if (p >= 0.75) return { cls: "c-top", emoji: "🔥🔥🔥", label: "Très bonnes chances" };
-  if (p >= 0.5) return { cls: "c-bon", emoji: "🔥🔥", label: "Bonnes chances" };
-  if (p >= 0.3) return { cls: "c-moy", emoji: "🔥", label: "Chances réelles" };
-  return { cls: "c-ambi", emoji: "🚀", label: "Projet ambitieux" };
-}
-
-function jauge(pct, cls) {
-  const r = 52, c = 2 * Math.PI * r;
-  return `<div class="ring-wrap"><svg viewBox="0 0 120 120" class="ring ${cls}" aria-hidden="true">
-    <circle cx="60" cy="60" r="${r}" class="ring-bg"/><circle cx="60" cy="60" r="${r}" class="ring-fg" stroke-dasharray="${c}" stroke-dashoffset="${c}" data-off="${c * (1 - pct / 100)}"/>
-  </svg><div class="ring-txt"><b>${pct} %</b><span>d'admission</span></div></div>`;
+// Durée la plus fréquente pour ce type de formation, en années
+function dureeType(base) {
+  const ans = base.map((u) => parseInt(u.duree, 10) || 1);
+  const freq = ans.reduce((m, a) => ((m[a] = (m[a] || 0) + 1), m), {});
+  return +Object.entries(freq).sort((a, b) => b[1] - a[1])[0][0];
 }
 
 $("#sim-form").addEventListener("submit", (e) => {
   e.preventDefault();
-  const moyenne = parseFloat(moyenneInput.value);
-  const anglais = parseInt(choix.anglais, 10);
-  const budget = +budgetInput.value >= 8000000 ? Infinity : +budgetInput.value;
-  const age = parseInt($("#sim-age").value, 10) || 0;
   const zone = $("#sim-results");
   const autre = choix.domaine === "Autre" ? $("#sim-autre").value.trim() : "";
   if (choix.domaine === "Autre" && !autre) {
@@ -124,109 +101,90 @@ $("#sim-form").addEventListener("submit", (e) => {
     return;
   }
 
-  // Base de calcul : même niveau ; même domaine si on le connaît
-  let base = UNIVERSITES.filter((u) => u.niveau === choix.niveau);
-  let precision = "domaine";
+  // Base de calcul : même niveau, même formation si on la connaît, type de ville choisi
+  const tousNiveau = UNIVERSITES.filter((u) => u.niveau === choix.niveau);
+  let base = tousNiveau;
+  let precision = "formation";
   if (choix.domaine !== "Tous" && choix.domaine !== "Autre") base = base.filter((u) => u.domaine === choix.domaine);
   if (autre) {
     const mots = sansAccent(autre).split(/[\s,/'-]+/).filter((m) => m.length > 3);
     const proches = base.filter((u) => mots.some((m) => sansAccent(`${u.programme} ${u.domaine}`).includes(m)));
     if (proches.length >= 3) base = proches; else precision = "general";
   }
-  if (!base.length) base = UNIVERSITES.filter((u) => u.niveau === choix.niveau);
+  if (choix.ville !== "Tous") {
+    const filtre = base.filter((u) => (choix.ville === "grande") === GRANDES_VILLES.includes(u.ville));
+    if (filtre.length >= 2) base = filtre; else precision = precision === "general" ? "general" : "ville";
+  }
+  if (!base.length) base = tousNiveau;
 
-  const couts = base.map((u) => (u.scolarite + u.dortoir) * TAUX_RMB_FCFA).sort((a, b) => a - b);
-  const vieAn = moyenneDe(base.map((u) => u.vie * 12 * TAUX_RMB_FCFA));
-  const coutMoyen = moyenneDe(couts);
-  const bas = couts[Math.floor(couts.length * 0.15)], haut = couts[Math.min(couts.length - 1, Math.floor(couts.length * 0.85))];
-
-  // Chances : on suppose 3 candidatures choisies dans le budget (ou les moins chères si le budget est serré)
-  const probas = base.map((u) => ({ p: probaUne(u, moyenne, anglais), cout: (u.scolarite + u.dortoir) * TAUX_RMB_FCFA }));
-  let pool = probas.filter((x) => x.cout <= budget);
-  const budgetSerre = pool.length < 3;
-  if (budgetSerre) pool = [...probas].sort((a, b) => a.cout - b.cout).slice(0, 3);
-  const meilleures = pool.map((x) => x.p).sort((a, b) => b - a).slice(0, 3);
-  // Les candidatures ne sont pas indépendantes (même dossier) : chacune ne compte qu'à 60 %
-  const pAdmission = 1 - meilleures.reduce((acc, p) => acc * (1 - 0.6 * p), 1);
-  const pct = Math.max(5, Math.min(90, Math.round(pAdmission * 100)));
-  const couverture = Math.round((probas.filter((x) => x.cout <= budget).length / probas.length) * 100);
-
-  const ch = niveauChance(pct / 100);
-  const pal = palier(coutMoyen);
-  const ageMax = choix.niveau === "Licence" ? 25 : choix.niveau === "Master" ? 35 : 0;
-  const bourse = !ageMax || age >= ageMax ? "faible" : moyenne >= 15 ? "bonne" : moyenne >= 13.5 ? "possible" : "faible";
+  const etudes = base.map((u) => (u.scolarite + u.dortoir) * TAUX_RMB_FCFA).sort((a, b) => a - b);
+  const scolarite = moyenneDe(base.map((u) => u.scolarite * TAUX_RMB_FCFA));
+  const logement = moyenneDe(base.map((u) => u.dortoir * TAUX_RMB_FCFA));
+  const vie = moyenneDe(base.map((u) => u.vie * 12 * TAUX_RMB_FCFA));
+  const parAn = scolarite + logement;
+  const totalAn = parAn + vie;
+  const bas = etudes[Math.floor(etudes.length * 0.15)];
+  const haut = etudes[Math.min(etudes.length - 1, Math.floor(etudes.length * 0.85))];
+  const annees = dureeType(base);
+  const pal = palier(parAn);
   const formation = autre || (choix.domaine === "Tous" ? "toutes formations" : choix.domaine);
+  const villeTxt = choix.ville === "grande" ? "grande ville" : choix.ville === "autre" ? "autre ville" : "";
 
-  const conseils = [];
-  if (anglais === 1 && choix.niveau !== "Année de langue") conseils.push("Améliorer votre anglais (ou commencer par une année de langue) augmente nettement vos chances.");
-  if (budgetSerre) conseils.push("Votre budget est serré pour cette formation : votre conseiller cherchera des universités moins chères ou des bourses.");
-  if (pct < 50) conseils.push("Une année de langue chinoise avant la formation peut ouvrir plus de portes.");
-  if (bourse !== "faible") conseils.push("Votre profil permet de tenter une bourse : on en parle avec votre conseiller.");
-  if (precision === "general") conseils.push(`Nous avons encore peu de données sur « ${autre} » : l'estimation s'appuie sur l'ensemble des formations de ce niveau.`);
+  const notes = [];
+  if (precision === "general") notes.push(`Nous avons encore peu de données sur « ${autre} » : le budget s'appuie sur l'ensemble des formations de ce niveau.`);
+  if (precision === "ville") notes.push("Peu de données pour ce type de ville : le budget s'appuie sur toutes les villes.");
+  if (choix.ville !== "grande") notes.push("À Pékin, Shanghai et Canton, le logement et la vie quotidienne coûtent plus cher.");
+  if (choix.niveau !== "Année de langue") notes.push("Votre conseiller peut proposer une université dont le prix correspond à votre budget, ainsi que des bourses quand c'est possible.");
 
-  const msg = `Bonjour Réussite Internationale, j'ai fait l'estimation sur votre site : ${choix.niveau}, ${formation}, moyenne ${moyenneInput.value}/20, budget ${budgetTexte()} par an, ${age} ans. Résultat : ${pct} % de chances d'admission. Je voudrais être accompagné(e).`;
+  const msg = `Bonjour Réussite Internationale, j'ai fait la simulation de budget sur votre site : ${choix.niveau}, ${formation}${villeTxt ? ", " + villeTxt : ""}. Budget moyen : environ ${fcfa(arrondi(totalAn))} FCFA par an tout compris. Je voudrais être accompagné(e).`;
 
   zone.innerHTML = `
   <div class="est">
-    <div class="est-head">
-      <p class="esp-label">Votre estimation · ${esc(choix.niveau)} · ${esc(formation)}</p>
-    </div>
-
-    <article class="est-card est-chance ${ch.cls}">
-      ${jauge(pct, ch.cls)}
-      <div>
-        <p class="est-big">${ch.emoji} ${ch.label}</p>
-        <p class="muted">Probabilité d'obtenir au moins une admission en déposant 3 candidatures bien choisies par votre conseiller.${budgetSerre ? ` <b>Attention :</b> avec votre budget actuel, ce résultat suppose de viser les formations les moins chères (dès ≈ ${fcfa(Math.min(...pool.map((x) => x.cout)))} FCFA par an).` : ""}</p>
-      </div>
-    </article>
+    <p class="esp-label">Votre simulation · ${esc(choix.niveau)} · ${esc(formation)}${villeTxt ? " · " + villeTxt : ""}</p>
 
     <article class="est-card est-cost ${pal.cls}">
       <div class="est-cost-top">
         <div>
-          <p class="esp-label">Coût moyen par an <span class="q-hint">(scolarité + logement)</span></p>
-          <p class="est-money">≈ ${fcfa(coutMoyen)} FCFA</p>
-          <p class="muted">En général entre ${fcfa(bas)} et ${fcfa(haut)} FCFA par an selon l'université.</p>
+          <p class="esp-label">Budget moyen par an <span class="q-hint">(études + logement)</span></p>
+          <p class="est-money">≈ ${fcfa(arrondi(parAn))} FCFA</p>
+          <p class="muted">Selon l'université, de ${fcfa(arrondi(bas))} à ${fcfa(arrondi(haut))} FCFA par an.</p>
         </div>
         <span class="tier ${pal.cls}">${pal.emoji} ${pal.label}</span>
       </div>
-      <div class="est-line"><span>+ Vie quotidienne (repas, transport, téléphone)</span><b>≈ ${fcfa(vieAn)} FCFA / an</b></div>
-      <div class="est-line"><span>Total moyen à prévoir par an</span><b>≈ ${fcfa(coutMoyen + vieAn)} FCFA</b></div>
+      <div class="est-line"><span>Frais de scolarité</span><b>≈ ${fcfa(arrondi(scolarite))} FCFA / an</b></div>
+      <div class="est-line"><span>Logement (chambre en résidence universitaire)</span><b>≈ ${fcfa(arrondi(logement))} FCFA / an</b></div>
+      <div class="est-line"><span>Vie quotidienne (repas, transport, téléphone)</span><b>≈ ${fcfa(arrondi(vie))} FCFA / an</b></div>
+      <div class="est-line est-total"><span>Total à prévoir par an</span><b>≈ ${fcfa(arrondi(totalAn))} FCFA</b></div>
     </article>
 
     <div class="est-grid">
       <article class="est-card">
-        <p class="esp-label">Votre budget</p>
-        <p class="est-mid">${couverture} %</p>
-        <div class="bar green"><span style="width:0" data-w="${couverture}"></span></div>
-        <p class="muted small">des formations de ce type rentrent dans un budget de ${budgetTexte()} par an.</p>
+        <p class="esp-label">Sur toute la formation</p>
+        <p class="est-mid">≈ ${fcfa(arrondi(totalAn * annees))} FCFA</p>
+        <p class="muted small">Pour une durée habituelle de ${annees} an${annees > 1 ? "s" : ""}, tout compris.</p>
       </article>
       <article class="est-card">
-        <p class="esp-label">Chance de bourse</p>
-        <p class="est-mid">${bourse === "bonne" ? "🎓 Bonne" : bourse === "possible" ? "🎓 Possible" : "Faible"}</p>
-        <p class="muted small">${ageMax ? `Selon votre moyenne et votre âge (bourses gouvernementales : moins de ${ageMax} ans en ${choix.niveau.toLowerCase()}).` : "Les années de langue ont rarement des bourses complètes."}</p>
+        <p class="esp-label">Soit par mois</p>
+        <p class="est-mid">≈ ${fcfa(arrondi(totalAn / 12))} FCFA</p>
+        <p class="muted small">Pour vous aider à préparer le budget de la famille.</p>
       </article>
     </div>
 
-    ${conseils.length ? `<article class="est-card"><p class="esp-label">Nos conseils</p><ul class="est-tips">${conseils.map((c) => `<li>${esc(c)}</li>`).join("")}</ul></article>` : ""}
+    ${notes.length ? `<article class="est-card"><p class="esp-label">Bon à savoir</p><ul class="est-tips">${notes.map((c) => `<li>${esc(c)}</li>`).join("")}</ul></article>` : ""}
 
     <div class="legend-tiers">
-      <span class="tier t-vert">💚 Accessible : jusqu'à 2,2 M FCFA</span>
-      <span class="tier t-jaune">⭐ Confort : 2,2 à 3,3 M FCFA</span>
-      <span class="tier t-rouge">👑 Prestige : plus de 3,3 M FCFA</span>
+      <span class="tier t-vert">💚 Accessible : jusqu'à 2,2 M FCFA / an</span>
+      <span class="tier t-jaune">⭐ Confort : 2,2 à 3,3 M FCFA / an</span>
+      <span class="tier t-rouge">👑 Prestige : plus de 3,3 M FCFA / an</span>
     </div>
 
     <a class="btn btn-lg btn-full btn-wa" href="${waLink(msg)}" target="_blank" rel="noopener"><svg class="ic"><use href="#i-chat"/></svg> Parler à un conseiller sur WhatsApp</a>
-    <p class="muted small">Estimation indicative, calculée à partir des formations que nous suivons (prix vérifiés régulièrement). Le choix réel des universités se fait avec votre conseiller.</p>
+    <p class="muted small">Budget indicatif, calculé à partir des prix des universités que nous suivons, vérifiés régulièrement. Le prix exact dépend de l'université choisie avec votre conseiller. L'accompagnement de l'agence est en plus.</p>
   </div>`;
-
-  requestAnimationFrame(() => requestAnimationFrame(() => {
-    $$("#sim-results [data-w]").forEach((b) => (b.style.width = b.dataset.w + "%"));
-    $$("#sim-results [data-off]").forEach((c) => (c.style.strokeDashoffset = c.dataset.off));
-  }));
   if (window.innerWidth < 1000) zone.scrollIntoView({ behavior: "smooth" });
 });
 
-$("#sim-results").innerHTML = `<div class="empty"><svg class="ic"><use href="#i-search"/></svg><p><b>Votre estimation apparaîtra ici.</b><br>Répondez aux questions puis appuyez sur « Voir mes chances ».</p></div>`;
+$("#sim-results").innerHTML = `<div class="empty"><svg class="ic"><use href="#i-coin"/></svg><p><b>Votre budget apparaîtra ici.</b><br>Choisissez votre niveau et votre formation, puis appuyez sur « Calculer mon budget ».</p></div>`;
 
 /* ---------- Espace élève ---------- */
 let codeCourant = null;
